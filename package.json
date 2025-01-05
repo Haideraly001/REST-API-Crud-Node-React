@@ -1,20 +1,23 @@
 {
-  "name": "restapi-tt",
+  "name": "backend-dev",
   "version": "1.0.0",
-  "description": "",
+  "description": "backend development practice",
   "main": "index.js",
   "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "node.js"
+  ],
+  "author": "Haider Aly",
   "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.9",
+    "prettier": "^3.4.2"
+  },
   "dependencies": {
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2",
-    "git": "^0.1.5",
-    "mongoose": "^8.4.3",
-    "nodemon": "^3.1.4"
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
   }
 }

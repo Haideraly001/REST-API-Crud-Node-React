@@ -3,6 +3,24 @@ const express = require('express')
 const app = express()
 const port = 3000
 
+const data = [
+  {
+    "name": "haider Aly",
+    "age": 25,
+    "city": "cairo",
+  },
+  {
+    "name": "haider Aly",
+    "age": 25,
+    "city": "cairo",
+  },
+  {
+    "name": "haider Aly",
+    "age": 25,
+    "city": "cairo",
+  }
+]
+
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
@@ -13,6 +31,10 @@ app.get('/about', (req, res) => {
 
 app.get('/login', (req, res) => {
   res.send('<h1>Login Page</h1>')
+})
+
+app.get("/api", (req, res) => {
+  res.json(data)
 })
 
 app.listen(process.env.PORT, () => {

@@ -1,42 +1,17 @@
-require('dotenv').config()
-const express = require('express')
-const app = express()
-const port = 3000
+import express from "express"
+import blogRouter from './controller/blog.js'
 
-const data = [
-  {
-    "name": "haider Aly",
-    "age": 25,
-    "city": "cairo",
-  },
-  {
-    "name": "haider Aly",
-    "age": 25,
-    "city": "cairo",
-  },
-  {
-    "name": "haider Aly",
-    "age": 25,
-    "city": "cairo",
-  }
-]
+const app = express()
+const port = process.env.PORT || 3000
+
 
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+  res.send('send a server')
 })
 
-app.get('/about', (req, res) => {
-  res.send('About me')
-})
+app.use('/blog', blogRouter)
 
-app.get('/login', (req, res) => {
-  res.send('<h1>Login Page</h1>')
-})
 
-app.get("/api", (req, res) => {
-  res.json(data)
-})
-
-app.listen(process.env.PORT, () => {
+app.listen(port, () => {
   console.log(`Exampl e app listening on port ${port}`)
 })

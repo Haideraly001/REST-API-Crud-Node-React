@@ -9,6 +9,7 @@ app.get('/', (req, res) => {
   res.send('send a server')
 })
 
+
 app.use('/blog', blogRouter)
 
 

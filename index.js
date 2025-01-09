@@ -1,22 +1,14 @@
-import express from "express"
-import blogRouter from './controller/blog.js'
+import readline from "readline"
+import fs, { write } from "fs"
 
-const app = express()
-const port = process.env.PORT || 3000
+const text = fs.readFileSync("./controller/input.txt", "utf-8")
 
+console.log("text", text);
 
-app.get('/', (req, res) => {
-  res.send('send a server')
-})
-app.get('/data', (req, res) => {
-  res.send('send a server')
-})
+const content = `${text} you will become a billionaire`
+
+const writetext = fs.writeFileSync("./controller/output.txt", content)
 
 
 
-app.use('/blog', blogRouter)
 
-
-app.listen(port, () => {
-  console.log(`Exampl e app listening on port ${port}`)
-})

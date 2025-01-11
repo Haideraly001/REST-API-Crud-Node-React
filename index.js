@@ -1,23 +1,13 @@
 import readline from "readline"
 import fs from "fs"
+import http from "http"
 
-const text = fs.readFileSync("./controller/input.txt", "utf-8")
+const server = http.createServer((req, res) => {
+  // res.writeHead(200, { "Content-Type": "text/plain" })
+  res.end("Hello World")
+  console.log("a new request receive")
+})
 
-// console.log("text", text);
-
-const content = `${text} you will become a billionaire`
-
-const writetext = fs.writeFileSync("./controller/output.txt", content)
-
-
-
-
-fs.readFile("./controller/output.txt", "utf-8", (error1, data1) => {
-  console.log(data1);
-  fs.readFile("./controller/input.txt", "utf-8", (error2, data2) => {
-    console.log(data2);
-    fs.writeFile('./controller/append.txt', `${data1}\n\n${data2}\n\n${new Date()}`, (err, data3) => {
-      console.log(data3);
-    })
-  })
+server.listen("8000", "127.0.0.1", () => {
+  console.log("Server is running on port 127.0.0.1:8000")
 })

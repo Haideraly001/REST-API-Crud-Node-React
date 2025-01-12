@@ -13,8 +13,27 @@ const usedata = () => {
 const html = fs.readFileSync("./template/index.html", "utf-8")
 
 const server = http.createServer((req, res) => {
-  res.writeHead(200, { "Content-Type": "text/html" })
-  res.end(html)
+
+  const path = req.url
+  if (path === "/") {
+    res.writeHead(200, {
+      "Content-Type": "text/html",
+      "my-header": "Home"
+    })
+    res.end(html)
+  } else if (path.toLocaleLowerCase() === "/home") {
+    res.writeHead(200, {
+      "Content-Type": "text/html",
+      "my-header": "Home"
+    })
+    res.end("you are in Home Page")
+  } else if (path.toLocaleLowerCase() === "/about") {
+    res.writeHead(200)
+    res.end("you are in About Page")
+  } else {
+    res.writeHead(400)
+    res.end("404 not found")
+  }
   console.log("New Request ", usedata())
 })
 

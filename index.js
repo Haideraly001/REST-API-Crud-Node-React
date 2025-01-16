@@ -54,6 +54,34 @@ app.get("/app/v1/movies/:id/:name?", (req, res) => {
 })
 
 
+app.patch("/app/v1/movies/:id", (req, res) => {
+  const reqParams = req.params.id * 1
+  const uniqueMovie = movies.find((el) => el.id === reqParams)
+
+  const editObj = Object.assign(uniqueMovie, req.body)
+  const indexByMovies = movies.indexOf(uniqueMovie)
+  console.log("editObj", editObj);
+
+  movies[indexByMovies] = editObj
+
+  fs.writeFile("./user.json", JSON.stringify(movies), (err) => {
+    if (err) {
+      return res.status(500).json({
+        status: 500,
+        message: "Error writing to file",
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        "movies": editObj
+      }
+    })
+  })
+})
+
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`)
 })

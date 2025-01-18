@@ -1,0 +1,7 @@
+[
+  { "id": 1, "name": "Edge of tomorrow", "year": 2014, "genre": "Scifiction" },
+  { "id": 2, "name": "Gladiator", "year": 2002, "genre": "Action" },
+  { "id": 3, "name": "inception", "year": 2010, "genre": "Action" },
+  { "id": 4, "name": "No Escape", "year": 2022, "genre": "horror" },
+  { "id": 5, "name": "Batman", "year": 2022, "genre": "Marvel" }
+]

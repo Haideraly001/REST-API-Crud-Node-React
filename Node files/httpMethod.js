@@ -21,7 +21,7 @@ app.get("/app/v1/movies", (req, res) => {
 app.post("/app/v1/movies", (req, res) => {
   const newId = movies[movies.length - 1].id + 1
   const users = req.body
-  const newObj = ({ id: newId, ...users })
+  const newObj = { id: newId, ...users }
   console.log("newObj", newObj);
   movies.push(newObj)
   fs.writeFile("./user.json", JSON.stringify(movies), (err) => {

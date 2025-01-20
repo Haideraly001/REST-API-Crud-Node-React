@@ -1,59 +1,34 @@
-import express from 'express'
-import fs from 'fs'
+import express from "express"
+import fs from "fs"
 
 const app = express()
-const port = 3000;
 
+const port = 3000
 app.use(express.json())
 
-const movies = JSON.parse(fs.readFileSync('./movies.json'))
+const movies = JSON.parse(fs.readFileSync("./movies.json"))
 
-
-app.get('/movies', (req, res) => {
-  res.status(200).json({
-    movies: movies
-  })
+app.get("/movies", (req, res) => {
+  res.status(200).json({ movies: movies })
 })
 
-app.post('/movies', (req, res) => {
-  const newMovies = req.body
-  const newId = movies[movies.length - 1].id + 1
+app.post("/movies", (req, res) => {
+  const newMovie = req.body
+  const id = movies[movies.length - 1].id + 1
+  const addMovie = ({ ...newMovie, id: id })
+  console.log(addMovie);
 
-  const movieAdd = { id: newId, ...newMovies }
-  movies.push(movieAdd)
-
-  fs.writeFile("./movies.json", JSON.stringify(movies), (err, data) => {
-    if (err) {
-      console.log(err);
-    }
+  movies.push(addMovie)
+  fs.writeFile("./movies.json", JSON.stringify(movies), (err) => {
+    if (err) console.log(err)
   })
-
   res.status(200).json({
-    data: movies
+    status: 200,
+    newMovie
   })
 })
-
-app.get('/movies/:id', (req, res) => {
-  const id = req.params.id * 1
-  console.log(id);
-
-  const findMovie = movies.find((el) => el.id === id)
-  console.log('moives', findMovie);
-
-  if (!findMovie) {
-    res.status(404).json({
-      message: 'Movie not found'
-    })
-  }
-
-  res.status(200).json({
-    movie: findMovie
-  })
-
-})
-
-
 
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`)
+  console.log(`server is listed at ${port}`);
+
 })

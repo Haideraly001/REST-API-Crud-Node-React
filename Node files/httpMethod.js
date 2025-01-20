@@ -38,6 +38,7 @@ app.post("/app/v1/movies", (req, res) => {
   })
 })
 
+
 app.get("/app/v1/movies/:id/:name?", (req, res) => {
   const params = req.params.id * 1
   const uniqueMovie = movies.find((el) => el.id === params)

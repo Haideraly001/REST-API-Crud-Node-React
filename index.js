@@ -15,7 +15,7 @@ app.get("/movies", (req, res) => {
 app.post("/movies", (req, res) => {
   const newMovie = req.body
   const id = movies[movies.length - 1].id + 1
-  const addMovie = ({ ...newMovie, id: id })
+  const addMovie = { ...newMovie, id: id }
   console.log(addMovie);
 
   movies.push(addMovie)
@@ -27,6 +27,20 @@ app.post("/movies", (req, res) => {
     newMovie
   })
 })
+
+app.get("/movies/:id?", (req, res) => {
+  const Id = req.params.id * 1
+
+  const moviesById = movies.find((el) => el.id === Id)
+  if (!moviesById) {
+    res.status(400)
+  }
+  res.status(200).json({
+    movie: moviesById
+  })
+})
+
+
 
 app.listen(port, () => {
   console.log(`server is listed at ${port}`);

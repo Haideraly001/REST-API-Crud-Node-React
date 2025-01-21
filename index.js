@@ -40,6 +40,37 @@ app.get("/movies/:id?", (req, res) => {
   })
 })
 
+app.patch("/movies/:id", (req, res) => {
+  const id = req.params.id * 1
+  const editMovie = movies.find((el) => el.id === id)
+  const updateMovie = { ...editMovie, ...req.body }
+
+  const movieIndex = movies.indexOf(editMovie)
+  console.log("movieIndex", movieIndex);
+
+  movies[movieIndex] = updateMovie
+
+  fs.writeFile('./movies.json', JSON.stringify(movies), (err) => {
+    if (err) {
+      res.status(404).json({
+        status: 404,
+        message: "Movie not found"
+      })
+    }
+  })
+
+  res.status(200).json({
+    status: 200,
+    movie: updateMovie
+  })
+
+
+
+
+
+
+})
+
 
 
 app.listen(port, () => {

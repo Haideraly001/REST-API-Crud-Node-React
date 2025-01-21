@@ -3,7 +3,7 @@
   { "id": 2, "name": "Gladiator", "year": 2002, "genre": "Action" },
   { "id": 3, "name": "inception", "year": 2010, "genre": "Action" },
   { "id": 4, "name": "No Escape", "year": 2022, "genre": "horror" },
-  { "id": 5, "name": "Batman", "year": 2022, "genre": "Marvel" },
+  { "id": 5, "name": "Batman", "year": 2022, "genre": "DC Comics" },
   { "id": 6, "name": "Civil war", "year": 2016, "genre": "Marvel" },
   { "id": 7, "name": "Oppenheimer", "year": 2023, "genre": "WB" }
 ]

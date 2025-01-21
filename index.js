@@ -40,40 +40,47 @@ app.get("/movies/:id?", (req, res) => {
   })
 })
 
-app.patch("/movies/:id", (req, res) => {
-  const id = req.params.id * 1
-  const editMovie = movies.find((el) => el.id === id)
-  const updateMovie = { ...editMovie, ...req.body }
+app.patch("/movies/:id?", (req, res) => {
+  const Id = req.params.id * 1
 
-  const movieIndex = movies.indexOf(editMovie)
-  console.log("movieIndex", movieIndex);
+  const movieId = movies.find((el) => el.id === Id)
+  const editMovie = { ...movieId, ...req.body }
 
-  movies[movieIndex] = updateMovie
+  const movieIndex = movies.indexOf(movieId)
+  movies[movieIndex] = editMovie
 
   fs.writeFile('./movies.json', JSON.stringify(movies), (err) => {
     if (err) {
-      res.status(404).json({
-        status: 404,
-        message: "Movie not found"
+      return res.status(400).json({
+        status: 400,
+        movies: "movies not found"
       })
     }
   })
 
   res.status(200).json({
     status: 200,
-    movie: updateMovie
+    movie: editMovie
   })
+})
 
 
-
-
+app.delete("/movies/:id?", (req, res) => {
+  const Id = req.params.id * 1
+  const movieId = movies.find((el) => el.id === Id)
+  const movieIndex = movies.indexOf(movieId)
+  movies.splice(movieIndex, 1)
+  fs.writeFile("./movies.json", JSON.stringify(movies), (err) => {
+    res.status(204).json({
+      status: success,
+      movies: null
+    })
+  })
 
 
 })
 
 
-
 app.listen(port, () => {
   console.log(`server is listed at ${port}`);
-
 })

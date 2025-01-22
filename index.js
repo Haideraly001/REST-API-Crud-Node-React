@@ -104,15 +104,24 @@ const deleteRequestById = (req, res) => {
 
 
 const logger = (req, res, next) => {
-  console.log("middleware call");
+  console.log("middleware id call");
   next()
 }
 
-app.route('/movies').get(getRequest).post(postRequest)
+const moviesRouter = express.Router()
+
+app.use("/movies", moviesRouter)
+
+moviesRouter.route('/')
+  .get(getRequest)
+  .post(postRequest)
 
 app.use(logger)
 
-app.route('/movies/:id').patch(patchRequestById).get(getRequestById).delete(deleteRequestById)
+moviesRouter.route('/:id')
+  .patch(patchRequestById)
+  .get(getRequestById)
+  .delete(deleteRequestById)
 
 app.listen(port, () => {
   console.log(`server is listen at ${port}`);

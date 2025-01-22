@@ -8,10 +8,6 @@ const movies = JSON.parse(fs.readFileSync('./movies.json'))
 app.use(express.json())
 
 
-
-
-
-
 const getRequest = (req, res) => {
   res.status(200).json({
     status: "success",
@@ -104,7 +100,15 @@ const deleteRequestById = (req, res) => {
 
 // app.delete('/movies/:id', deleteRequestById)
 
+const logger = (req, res, next) => {
+  console.log("middleware call");
+  next()
+}
+
 app.route('/movies').get(getRequest).post(postRequest)
+
+app.use(logger)
+
 app.route('/movies/:id').patch(patchRequestById).get(getRequestById).delete(deleteRequestById)
 
 app.listen(port, () => {

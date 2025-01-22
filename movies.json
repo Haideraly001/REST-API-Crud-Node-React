@@ -1,14 +1,1 @@
-[
-  {
-    "id": 1,
-    "name": "Edge of tomorrow",
-    "year": 2014,
-    "genre": "Sciencefiction"
-  },
-  { "id": 2, "name": "Oppenheimer", "year": 2023, "genre": "WB" },
-  { "id": 3, "name": "inception", "year": 2010, "genre": "Action" },
-  { "id": 4, "name": "No Escape", "year": 2022, "genre": "Horror" },
-  { "id": 5, "name": "Batman", "year": 2022, "genre": "DC Comics" },
-  { "id": 6, "name": "Civil war", "year": 2016, "genre": "Marvel" },
-  { "id": 7, "name": "Superman Legacy", "year": 2025, "genre": "SuperHero" }
-]
+[{"id":1,"name":"Edge of tomorrow","year":2014,"genre":"Sciencefiction"},{"id":2,"name":"Oppenheimer","year":2023,"genre":"WB"},{"id":3,"name":"inception","year":2010,"genre":"Action"},{"id":4,"name":"No Escape","year":2022,"genre":"Horror"},{"id":5,"name":"Batman","year":2022,"genre":"DC Comics"},{"id":6,"name":"Civil war","year":2016,"genre":"Marvel"},{"id":7,"name":"Superman Legacy","year":2025,"genre":"SuperHero"},{"id":8,"name":"Edge of tomorrow","year":2014,"genre":"Sciencefiction"},{"id":9,"name":"Edge of tomorrow","year":2014,"genre":"Sciencefiction"},{"id":10,"name":"Edge of tomorrow","year":2014,"genre":"Sciencefiction"},{"id":11,"name":"Edge of tomorrow","year":2014,"genre":"Sciencefiction"},{"id":12,"name":"Edge of tomorrow","year":2014,"genre":"Sciencefiction"}]

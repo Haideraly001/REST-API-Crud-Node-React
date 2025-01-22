@@ -5,7 +5,13 @@ const app = express()
 const port = 3000
 
 const movies = JSON.parse(fs.readFileSync('./movies.json'))
+
 app.use(express.json())
+
+app.use((req, res, next) => {
+  req.data = new Date().toISOString()
+  next()
+})
 
 
 
@@ -31,8 +37,11 @@ const postRequest = (req, res) => {
       console.error(err)
     }
   })
+  console.log("req.requestAt", req.requestAt);
+
   res.status(201).json({
     status: "success",
+    Date: req.data,
     data: modifyObj
   })
 }
@@ -94,17 +103,15 @@ const deleteRequestById = (req, res) => {
 }
 
 
-// app.get('/movies', getRequest)
-
-// app.post('/movies', postRequest)
-
-// app.get("/movies/:id", getRequestById)
-
-// app.patch("/movies/:id", patchRequestById)
-
-// app.delete('/movies/:id', deleteRequestById)
+const logger = (req, res, next) => {
+  console.log("middleware call");
+  next()
+}
 
 app.route('/movies').get(getRequest).post(postRequest)
+
+app.use(logger)
+
 app.route('/movies/:id').patch(patchRequestById).get(getRequestById).delete(deleteRequestById)
 
 app.listen(port, () => {

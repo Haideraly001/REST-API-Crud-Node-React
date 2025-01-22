@@ -118,6 +118,12 @@ moviesRouter.route('/')
 
 app.use(logger)
 
+moviesRouter.param('id', (req, res, next, value) => {
+  console.log("movies Id is " + value);
+  next()
+
+})
+
 moviesRouter.route('/:id')
   .patch(patchRequestById)
   .get(getRequestById)

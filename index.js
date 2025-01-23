@@ -6,6 +6,7 @@ const app = express()
 const port = 3000
 
 const movies = JSON.parse(fs.readFileSync('./movies.json'))
+const router = express.Router()
 
 app.use(express.json())
 
@@ -109,21 +110,24 @@ const logger = (req, res, next) => {
   next()
 }
 
-const router = express.Router()
-app.use(express.urlencoded({ extended: true }));
-
-app.use("/", router)
 
 
+app.use("/movies", router)
 app.use("/blog", blogRouter)
 
 
-router.route('/movies')
+
+
+router.route('/')
   .get(getRequest)
   .post(postRequest)
 
 app.use(logger)
 
+router.param('id', (req, res, next, value) => {
+  console.log("The params value" + value);
+  next()
+})
 
 
 router.route('/:id')

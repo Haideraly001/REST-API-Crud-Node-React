@@ -1,6 +1,5 @@
 import express from 'express'
 import fs from 'fs'
-import blogRouter from './controller/blog.js'
 
 const app = express()
 const port = 3000
@@ -109,24 +108,23 @@ const logger = (req, res, next) => {
   next()
 }
 
-const router = express.Router()
-app.use(express.urlencoded({ extended: true }));
+const moviesRouter = express.Router()
 
-app.use("/", router)
+app.use("/movies", moviesRouter)
 
-
-app.use("/blog", blogRouter)
-
-
-router.route('/movies')
+moviesRouter.route('/')
   .get(getRequest)
   .post(postRequest)
 
 app.use(logger)
 
+moviesRouter.param('id', (req, res, next, value) => {
+  console.log("movies Id is " + value);
+  next()
 
+})
 
-router.route('/:id')
+moviesRouter.route('/:id')
   .patch(patchRequestById)
   .get(getRequestById)
   .delete(deleteRequestById)

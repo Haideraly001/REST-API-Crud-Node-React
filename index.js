@@ -17,7 +17,10 @@ app.use((req, res, next) => {
 
 
 
-
+// ---------
+app.get("/data", (req, res) => {
+  res.json(movies)
+})
 
 
 const getRequest = (req, res) => {

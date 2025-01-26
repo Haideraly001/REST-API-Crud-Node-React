@@ -23,6 +23,11 @@ const jokes = [
     "title": "Forth joke",
     "joke": "What do you call a can opener that doesn't work? A can"
   },
+  {
+    "id": 4,
+    "title": "Forth joke",
+    "joke": "What do you call a can opener that doesn't work? A can"
+  },
 ]
 
 

@@ -9,15 +9,14 @@ app.use(express.json())
 
 const movies = JSON.parse(fs.readFileSync("./movies.json"))
 
-
-app.get("/movies", (req, res) => {
+const getMethod = (req, res) => {
   res.status(200).json({
     status: true,
     data: movies
   })
-})
+}
 
-app.post("/movies", (req, res) => {
+const postMethod = (req, res) => {
   const body = req.body
 
   const Idx = movies[movies.length - 1].id + 1
@@ -37,9 +36,9 @@ app.post("/movies", (req, res) => {
     status: true,
     data: addMovie
   })
-})
+}
 
-app.get('/movies/:id', (req, res) => {
+const getMethodByIdx = (req, res) => {
   const id = req.params.id * 1
 
   const movieByIdx = movies.find((el) => el.id === id)
@@ -48,12 +47,11 @@ app.get('/movies/:id', (req, res) => {
     status: true,
     movies: movieByIdx
   })
-})
+}
 
-app.patch('/movies/:id', (req, res) => {
+const patchMethod = (req, res) => {
   const id = req.params.id * 1
   const body = req.body
-
 
   const findMovie = movies.find((el) => el.id === id)
 
@@ -80,9 +78,9 @@ app.patch('/movies/:id', (req, res) => {
     data: updateMovie
   })
 
-})
+}
 
-app.delete("/movies/:id", (req, res) => {
+const deleteMethod = (req, res) => {
   const id = req.params.id * 1
   const findMovie = movies.find((el) => el.id === id)
   const fitMovie = movies.indexOf(findMovie)
@@ -99,8 +97,31 @@ app.delete("/movies/:id", (req, res) => {
     status: true,
     data: "Movie Deleted"
   })
+}
 
-})
+
+// app.get("/movies", getMethod)
+
+// app.post("/movies", postMethod)
+
+// app.get('/movies/:id', getMethodByIdx)
+
+// app.patch('/movies/:id', patchMethod)
+
+// app.delete("/movies/:id", deleteMethod)
+
+
+app.use()
+
+app.route("/movies")
+  .get(getMethod)
+  .post(postMethod)
+
+app.route("/movies/:id")
+  .get(getMethodByIdx)
+  .patch(patchMethod)
+  .delete(deleteMethod)
+
 
 
 app.listen(port, () => {

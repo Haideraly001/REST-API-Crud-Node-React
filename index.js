@@ -5,7 +5,18 @@ import fs from "fs"
 const app = express()
 const port = 3000;
 
+const Router = express.Router()
+
 app.use(express.json())
+
+const customeMW = function (req, res, next) {
+  console.log("middleware call");
+  next()
+}
+app.use((req, res, next) => {
+  req.date = new Date().toISOString();
+  next()
+})
 
 const movies = JSON.parse(fs.readFileSync("./movies.json"))
 
@@ -45,6 +56,7 @@ const getMethodByIdx = (req, res) => {
 
   res.status(200).json({
     status: true,
+    date: req.date,
     movies: movieByIdx
   })
 }
@@ -111,13 +123,25 @@ const deleteMethod = (req, res) => {
 // app.delete("/movies/:id", deleteMethod)
 
 
-app.use()
+// app.use(customeMW)
 
-app.route("/movies")
+
+
+// app.route("/movies")
+//   .get(getMethod)
+//   .post(postMethod)
+
+// app.route("/movies/:id")
+//   .get(getMethodByIdx)
+//   .patch(patchMethod)
+//   .delete(deleteMethod)
+
+app.use('/movies', Router)
+Router.route('/')
   .get(getMethod)
   .post(postMethod)
 
-app.route("/movies/:id")
+Router.route('/:id')
   .get(getMethodByIdx)
   .patch(patchMethod)
   .delete(deleteMethod)

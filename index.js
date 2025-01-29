@@ -1,9 +1,12 @@
 import fs from "fs"
 import express from 'express'
+import blogRoute from "./blog.js"
 
 const app = express()
+const router = express.Router()
 
 const home = fs.readFileSync("./template/index.html")
+
 
 const form = JSON.parse(fs.readFileSync('./form.json',))
 
@@ -12,6 +15,9 @@ app.use(express.json())
 app.get("/", (req, res) => {
   res.send('<h3>Routes are in /form</h3>')
 })
+
+app.use("/form", router)
+app.use("/blog", blogRoute)
 
 app.use((req, res, next) => {
   req.date = new Date().toISOString()
@@ -115,14 +121,15 @@ app.use((req, res, next) => {
   next()
 })
 
-app.route('/form')
+
+router.route('/')
   .get(getForm)
   .post(postForm)
 
 
 app.use(secondMiddleware)
 
-app.route('/form/:id')
+router.route('/:id')
   .get(getFormbyIdx)
   .patch(updateFormByIdx)
   .delete(deleteFormByIdx)

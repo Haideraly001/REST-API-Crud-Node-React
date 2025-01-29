@@ -1,153 +1,131 @@
-import express from "express"
 import fs from "fs"
-
+import express from 'express'
 
 const app = express()
-const port = 3000;
 
-const Router = express.Router()
+const home = fs.readFileSync("./template/index.html")
+
+const form = JSON.parse(fs.readFileSync('./form.json',))
 
 app.use(express.json())
 
-const customeMW = function (req, res, next) {
-  console.log("middleware call");
-  next()
-}
+app.get("/", (req, res) => {
+  res.send('<h3>Routes are in /form</h3>')
+})
+
 app.use((req, res, next) => {
-  req.date = new Date().toISOString();
+  req.date = new Date().toISOString()
   next()
 })
 
-const movies = JSON.parse(fs.readFileSync("./movies.json"))
+const secondMiddleware = function (req, res, next) {
+  console.log('Second middleware')
+  next()
+}
 
-const getMethod = (req, res) => {
+const getForm = (req, res) => {
   res.status(200).json({
-    status: true,
-    data: movies
+    status: "succss",
+    data: form
   })
 }
 
-const postMethod = (req, res) => {
-  const body = req.body
+const postForm = (req, res) => {
+  const idx = form[form.length - 1].id * 1 + 1
 
-  const Idx = movies[movies.length - 1].id + 1
+  const newForm = { ...req.body, id: idx }
+  form.push(newForm)
 
-  const addMovie = { ...body, id: Idx }
-  console.log("addMovie", addMovie);
-
-  movies.push(addMovie)
-
-  const newMoviesData = fs.writeFile("./movies.json", JSON.stringify(movies), (err) => {
-    if (!addMovie) {
-      console.log(err)
+  fs.writeFile('./form.json', JSON.stringify(form), (err) => {
+    if (!err) {
+      res.status(400).json({
+        status: "fail"
+      })
     }
   })
-
-  res.status(200).json({
-    status: true,
-    data: addMovie
-  })
-}
-
-const getMethodByIdx = (req, res) => {
-  const id = req.params.id * 1
-
-  const movieByIdx = movies.find((el) => el.id === id)
-
-  res.status(200).json({
-    status: true,
-    date: req.date,
-    movies: movieByIdx
-  })
-}
-
-const patchMethod = (req, res) => {
-  const id = req.params.id * 1
-  const body = req.body
-
-  const findMovie = movies.find((el) => el.id === id)
-
-  console.log(body, findMovie);
-
-  const updateMovie = { ...findMovie, ...body }
-  console.log("updateMovie", updateMovie);
-
-  const fitMovie = movies.indexOf(findMovie)
-  movies[fitMovie] = updateMovie
-
-  fs.writeFile('./movies.json', JSON.stringify(movies), (err) => {
-    if (err) {
-      return res.status(404).json({
-        err: "Error",
-        message: "Movie not Edit"
-      }
-      )
-    }
-  })
-
-  res.status(200).json({
-    status: true,
-    data: updateMovie
+  res.status(201).json({
+    status: "succss",
+    data: newForm
   })
 
 }
 
-const deleteMethod = (req, res) => {
-  const id = req.params.id * 1
-  const findMovie = movies.find((el) => el.id === id)
-  const fitMovie = movies.indexOf(findMovie)
-  movies.splice(fitMovie, 1)
-  fs.writeFile('./movies.json', JSON.stringify(movies), (err) => {
-    if (err) {
-      return res.status(404).json({
-        err: "Error",
-        message: "Movie not Delete"
+const getFormbyIdx = (req, res) => {
+  const param = req.params.id * 1
+  const findData = form.find((el) => el.id === param)
+
+  if (!findData) {
+    res.status(400).json({
+      status: "fail",
+      data: "there is no such id to show "
+    })
+  }
+  res.status(200).json({
+    status: "succss",
+    data: findData
+  })
+
+}
+
+const updateFormByIdx = (req, res) => {
+
+  const urlID = req.params.id * 1
+  const findData = form.find((el) => el.id === urlID)
+  const updateForm = { ...findData, ...req.body }
+
+  const idxUpdateFrom = form.indexOf(findData)
+  form[idxUpdateFrom] = updateForm
+
+  fs.writeFile("./form.json", JSON.stringify(form), (err) => {
+    if (!err) {
+      res.status(400).json({
+        status: "fail",
+        data: "file is failed to udpate"
       })
     }
   })
   res.status(200).json({
-    status: true,
-    data: "Movie Deleted"
+    status: "succss",
+    updateDate: req.date,
+    data: updateForm
   })
 }
 
+const deleteFormByIdx = (req, res) => {
+  const urlID = req.params.id * 1
+  const findData = form.find((el) => el.id === urlID)
+  const idxDelete = form.indexOf(findData)
+  form.splice(idxDelete, 1)
 
-// app.get("/movies", getMethod)
+  fs.writeFile("./form.json", JSON.stringify(form), (err) => {
+    if (!err) {
+      res.status(400).json({
+        status: "fail",
+      })
+    }
+  })
+  res.status(200).json({
+    status: "succss",
+    data: "obj delete"
+  })
+}
 
-// app.post("/movies", postMethod)
-
-// app.get('/movies/:id', getMethodByIdx)
-
-// app.patch('/movies/:id', patchMethod)
-
-// app.delete("/movies/:id", deleteMethod)
-
-
-// app.use(customeMW)
-
-
-
-// app.route("/movies")
-//   .get(getMethod)
-//   .post(postMethod)
-
-// app.route("/movies/:id")
-//   .get(getMethodByIdx)
-//   .patch(patchMethod)
-//   .delete(deleteMethod)
-
-app.use('/movies', Router)
-Router.route('/')
-  .get(getMethod)
-  .post(postMethod)
-
-Router.route('/:id')
-  .get(getMethodByIdx)
-  .patch(patchMethod)
-  .delete(deleteMethod)
-
-
-
-app.listen(port, () => {
-  console.log("Server is running on port 3000")
+app.use((req, res, next) => {
+  console.log("idx Hit");
+  next()
 })
+
+app.route('/form')
+  .get(getForm)
+  .post(postForm)
+
+
+app.use(secondMiddleware)
+
+app.route('/form/:id')
+  .get(getFormbyIdx)
+  .patch(updateFormByIdx)
+  .delete(deleteFormByIdx)
+
+
+app.listen(8000)

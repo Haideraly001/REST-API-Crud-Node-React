@@ -4,6 +4,7 @@ import blogRoute from "./blog.js"
 import mongoose from "mongoose"
 import dotenv from "dotenv"
 import formRouter from "./router/form.js"
+import FormModal from "./model/formModel.js"
 
 const app = express()
 
@@ -31,27 +32,27 @@ mongoose.connect(localMongodb).then((conn) => {
 })
 
 
-const formSchema = mongoose.Schema({
-  fullname: {
-    type: String,
-    required: [true, "feild is require"]
-  },
-  lastname: {
-    type: String,
-    required: [true, "feild is require"]
-  },
-  age: {
-    type: String,
-    required: [true, "feild is require"]
-  },
-  email: {
-    type: String,
-    required: [true, "feild is require"],
-    default: 0.1
-  },
-})
+// const formSchema = mongoose.Schema({
+//   fullname: {
+//     type: String,
+//     required: [true, "feild is require"]
+//   },
+//   lastname: {
+//     type: String,
+//     required: [true, "feild is require"]
+//   },
+//   age: {
+//     type: String,
+//     required: [true, "feild is require"]
+//   },
+//   email: {
+//     type: String,
+//     required: [true, "feild is require"],
+//     default: 0.1
+//   },
+// })
 
-const FormModal = mongoose.model("forms", formSchema)
+// const FormModal = mongoose.model("forms", formSchema)
 
 const testForm = new FormModal({
   fullname: "Haider",

@@ -23,19 +23,19 @@ mongoose.connect(db, {
   })
 
 
-const testForm = new formModel({
-  fullName: "Aemond",
-  lastName: "Targaryan",
-  email: "AemondTargaryan12@gmail.com",
-  age: 23
-});
+// const testForm = new formModel({
+//   fullName: "Aemond",
+//   lastName: "Targaryan",
+//   email: "AemondTargaryan12@gmail.com",
+//   age: 23
+// });
 
-testForm.save()
-  .then((doc) => {
-    console.log(doc);
-  }).catch((err) => {
-    console.log(err);
-  })
+// testForm.save()
+//   .then((doc) => {
+//     console.log(doc);
+//   }).catch((err) => {
+//     console.log(err);
+//   })
 
 
 const app = express()

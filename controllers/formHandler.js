@@ -1,5 +1,44 @@
 import fs from "fs"
+import formModel from "../model/formModal.js"
 const formDATA = JSON.parse(fs.readFileSync('./form.json', 'utf-8'))
+
+
+
+
+const getData = async (req, res) => {
+  try {
+    const find = await formModel.find({})
+    res.json({
+      status: 200,
+      message: find,
+    })
+  } catch {
+    res.status(500).send({ message: "Internal Server Error" })
+  }
+}
+
+const insertform = async (req, res) => {
+  try {
+    console.log(req.body);
+
+    const newform = await formModel.create(req.body)
+    res.json({
+      status: 200,
+      message: newform
+    })
+
+  } catch {
+    res.status(500).send({ message: "Internal Server Error" })
+  }
+}
+
+
+
+
+
+
+
+
 
 
 const getForm = (req, res) => {
@@ -26,5 +65,7 @@ const getFormById = (req, res) => {
 
 export {
   getForm,
-  getFormById
+  getFormById,
+  getData,
+  insertform
 }

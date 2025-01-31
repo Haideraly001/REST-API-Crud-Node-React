@@ -57,6 +57,7 @@ const testForm = new FormModal({
   fullname: "Haider",
   lastname: "Ali",
   age: "25",
+  email: "haideralymughal01@gmail.com"
 })
 
 testForm.save()

@@ -95,12 +95,5 @@ const deleteFormByIdx = (req, res) => {
   })
 }
 
-// export default {
-//   getForm,
-//   postForm,
-//   updateFormByIdx,
-//   getFormbyIdx,
-//   deleteFormByIdx
-// }
 
 export { getForm, postForm, updateFormByIdx, getFormbyIdx, deleteFormByIdx };

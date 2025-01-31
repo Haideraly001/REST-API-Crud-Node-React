@@ -24,9 +24,10 @@ mongoose.connect(db, {
 
 
 const testForm = new formModel({
-  fullName: "Jaime",
-  lastName: "Lannister",
-  email: "jaime@lannister.com"
+  fullName: "Aemond",
+  lastName: "Targaryan",
+  email: "AemondTargaryan12@gmail.com",
+  age: 23
 });
 
 testForm.save()

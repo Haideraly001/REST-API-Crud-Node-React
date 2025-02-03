@@ -1,47 +1,30 @@
-import http from "http"
-import dotenv from "dotenv"
 import express from "express"
-import formRouter from "./router/formRouter.js"
 import mongoose from "mongoose"
-import formModel from "./model/formModal.js"
+import dotenv from "dotenv"
+import movieRouter from "./router/moviesroute.js"
 
 dotenv.config()
-const db = process.env.DB_CON_
+const port = process.env.PORT
+const dbConnect = process.env.DB_CON
 
-if (!db) {
-  console.error("MongoDB connection string is missing in the environment variables.");
-  process.exit(1);
+const app = express()
+app.use(express())
+
+if (!dbConnect) {
+  console.log("db is not working");
+  process.exit(1)
 }
 
-mongoose.connect(db, {
+mongoose.connect(dbConnect, {
   useNewUrlParser: true,
 })
-  .then((con) => {
-    console.log("db connect");
-  }).catch((err) => {
-    console.log(err);
+  .then((conn) => {
+    console.log("Connected to MongoDB")
+  }).catch(() => {
+    console.log("Error connecting to MongoDB")
   })
 
 
-// const testForm = new formModel({
-//   fullName: "Aemond",
-//   lastName: "Targaryan",
-//   email: "AemondTargaryan12@gmail.com",
-//   age: 23
-// });
-
-// testForm.save()
-//   .then((doc) => {
-//     console.log(doc);
-//   }).catch((err) => {
-//     console.log(err);
-//   })
-
-
-const app = express()
-
-const port = process.env.DEV_PORT
-
-app.use("/api/form", formRouter)
+app.use("/api/movies", movieRouter)
 
 app.listen(port)

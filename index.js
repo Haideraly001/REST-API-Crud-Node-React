@@ -15,14 +15,12 @@ if (!dbConnect) {
   process.exit(1)
 }
 
-mongoose.connect(dbConnect, {
-  useNewUrlParser: true,
-})
-  .then((conn) => {
-    console.log("Connected to MongoDB")
-  }).catch(() => {
-    console.log("Error connecting to MongoDB")
-  })
+mongoose.connect(dbConnect)
+// .then((conn) => {
+//   console.log("Connected to MongoDB")
+// }).catch(() => {
+//   console.log("Error connecting to MongoDB")
+// })
 
 
 app.use("/api/movies", movieRouter)

@@ -35,7 +35,7 @@ const getMovies = async (req, res) => {
     const queryObj = JSON.parse(queryStr)
 
 
-    console.log(queryObj);
+    console.log('queryobj', queryObj);
 
 
     const movies = await moviesModal.find(queryObj)

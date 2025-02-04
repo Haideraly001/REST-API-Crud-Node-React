@@ -3,9 +3,49 @@ import moviesModal from "../model/moviemodal.js"
 
 const getMovies = async (req, res) => {
   try {
-    const movies = await moviesModal.find({})
+
+    console.log(req.query);
+
+    // when we don't specify any query string then its show us nothing 
+    // const movies = await moviesModal.find()
+    //   .where("duration")
+    //   .equals(req.query.duration)
+    //   .where("rating")
+    //   .equals(req.query.rating)
+
+    // when we don't specify any query string its show us all data and when we add query feild which one is exist its will work on both but when we add more field which one is not exist it will through error 
+    // const movies = await moviesModal.find(req.query)
+
+
+    // const excludeFeild = ['limit', 'feild', 'sort', 'page']
+
+    // const query = { ...req.query }
+
+    // excludeFeild.forEach((el) => {
+    //   delete query[el]
+    // })
+
+    // console.log(query);
+
+
+    let queryStr = JSON.stringify(req.query)
+    console.log(queryStr);
+
+    queryStr = queryStr.replace(/\b(gte|lte|gt|lt)\b/g, (match) => `$${match}`)
+    const queryObj = JSON.parse(queryStr)
+
+
+    console.log(queryObj);
+
+
+    const movies = await moviesModal.find(queryObj)
+
+
+
+
     res.status(200).json({
       status: "success",
+      length: movies.length,
       data: movies,
     })
   } catch {

@@ -6,33 +6,46 @@ const getMovies = async (req, res) => {
 
     console.log(req.query);
 
-
-    // const movies = await moviesModal.find({ duration: req.query.duration * 1, rating: req.query.rating * 1 })
+    // step1
+    // when we don't specify any query string then its show us nothing 
     // const movies = await moviesModal.find()
     //   .where("duration")
     //   .equals(req.query.duration)
     //   .where("rating")
     //   .equals(req.query.rating)
 
-
-    // before sort 
+    // step2
+    // when we don't specify any query string its show us all data and when we add query feild which one is exist its will work on both but when we add more field which one is not exist it will through error 
     // const movies = await moviesModal.find(req.query)
 
-    const array = ["page", "limit", "sort",]
+    // step3
+    // in this  when we add any more specific feild and its has duration and sort in array but we mention page in it, it will automatically remove page 
+    // const excludeFeild = ['limit', 'feild', 'sort', 'page']
 
-    array.forEach((el) => {
-      delete req.query[el]
-    })
+    // const query = { ...req.query }
 
-    // console.log("after sort", req.query);
+    // excludeFeild.forEach((el) => {
+    //   delete query[el]
+    // })
+
+    // console.log(query);
+
 
     // step4
-    let queryObj = JSON.stringify(req.query)
-    queryObj = queryObj.replace(/\b(gte|lte|gt|lt)\b/g, (match) => `$${match}`)
-    const query = JSON.parse(queryObj)
-    console.log(query);
+    // for if we add gte ur lte field in query
+    let queryStr = JSON.stringify(req.query)
+    console.log(queryStr);
 
-    const movies = await moviesModal.find(query)
+    queryStr = queryStr.replace(/\b(gte|lte|gt|lt)\b/g, (match) => `$${match}`)
+    const queryObj = JSON.parse(queryStr)
+
+
+    console.log('queryobj', queryObj);
+
+
+    const movies = await moviesModal.find(queryObj)
+
+
 
 
     res.status(200).json({

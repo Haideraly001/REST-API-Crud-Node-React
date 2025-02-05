@@ -1,52 +1,90 @@
+import { query } from "express"
 import moviesModal from "../model/moviemodal.js"
 
 
 const getMovies = async (req, res) => {
   try {
+    // console.log(req.query);
 
-    console.log(req.query);
-
-    // step1
-    // when we don't specify any query string then its show us nothing 
     // const movies = await moviesModal.find()
     //   .where("duration")
     //   .equals(req.query.duration)
-    //   .where("rating")
-    //   .equals(req.query.rating)
+    //   .where("releaseYear")
+    //   .equals(req.query.releaseYear)
 
-    // step2
-    // when we don't specify any query string its show us all data and when we add query feild which one is exist its will work on both but when we add more field which one is not exist it will through error 
-    // const movies = await moviesModal.find(req.query)
+    // const movies = await moviesModal.find({ duration: +req.query.duration, releaseYear: +req.query.releaseYear })
 
-    // step3
-    // in this  when we add any more specific feild and its has duration and sort in array but we mention page in it, it will automatically remove page 
-    // const excludeFeild = ['limit', 'feild', 'sort', 'page']
+    // ---------------------
+    // const obj = JSON.stringify(req.query.name)
 
-    // const query = { ...req.query }
+    // const splitName = obj.replace(/"/g, '').split(/(?=[A-Z])/);
+    // const nowsplitjoin = splitName.join(" ")
 
-    // excludeFeild.forEach((el) => {
+    // console.log(nowsplitjoin);
+
+    // const movies = await moviesModal.find({ name: nowsplitjoin })
+
+    // ---------------------------
+
+    // let exclusiveArray = { ...req.query }
+
+    // exclusiveArray = Object.keys(exclusiveArray)
+
+
+    // const exclusiveArray = ['sort', 'page', 'limit']
+    // console.log(req.query);
+
+
+    // let query = { ...req.query }
+
+    // exclusiveArray.forEach((el) => {
     //   delete query[el]
     // })
+    // ---------------------
 
-    // console.log(query);
+    let queryObj = JSON.stringify(req.query)
+    queryObj = queryObj.replace(/\b(gte|gt|lt|lte)\b/g, (match) => `$${match}`)
 
+    const queryData = JSON.parse(queryObj)
 
-    // step4
-    // for if we add gte ur lte field in query
-    let queryStr = JSON.stringify(req.query)
-    console.log(queryStr);
-
-    queryStr = queryStr.replace(/\b(gte|lte|gt|lt)\b/g, (match) => `$${match}`)
-    const queryObj = JSON.parse(queryStr)
-
-
-    console.log('queryobj', queryObj);
-
-
-    const movies = await moviesModal.find(queryObj)
+    // -------------
 
 
 
+    let querys = moviesModal.find()
+
+    // sort query
+    if (req.query.sort) {
+      let manysortQuery = req.query.sort
+      manysortQuery = manysortQuery.split(",").join(" ")
+      console.log(manysortQuery);
+      querys = querys.sort(manysortQuery)
+    } else {
+      querys = querys.sort("createdAt")
+    }
+
+    // feild query
+    if (req.query.feilds) {
+      const feildsort = req.query.feilds.split(",").join(" ")
+      querys = querys.select(feildsort)
+    }
+    else {
+      querys = querys.select("-__v")
+    }
+
+    // page query 
+    const page = +req.query.page || 1;
+    const limit = +req.query.limit || 10;
+
+    const skip = (page - 1) * limit
+
+    querys = querys.skip(skip).limit(limit)
+
+    console.log(querys);
+
+
+
+    const movies = await querys
 
     res.status(200).json({
       status: "success",
@@ -65,9 +103,10 @@ const postMovies = async (req, res) => {
       status: "success",
       data: newMovie
     })
-  } catch {
+  } catch (err) {
     res.status(500).json({
-      message: "Error creating movie"
+      message: "Error creating movie",
+      msg: err.message
     })
   }
 

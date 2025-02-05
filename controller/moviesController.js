@@ -1,3 +1,4 @@
+import { query } from "express"
 import moviesModal from "../model/moviemodal.js"
 
 
@@ -48,18 +49,43 @@ const getMovies = async (req, res) => {
 
     // -------------
 
-    console.log(req.query);
-    let querySort = moviesModal.find({})
 
+
+    let querys = moviesModal.find()
+
+    // sort query
     if (req.query.sort) {
-      const splitmanySort = req.query.sort.split(",").join(" ")
-      console.log(splitmanySort);
-
-      querySort = querySort.sort(splitmanySort) // req.query.sort replace by price
+      let manysortQuery = req.query.sort
+      manysortQuery = manysortQuery.split(",").join(" ")
+      console.log(manysortQuery);
+      querys = querys.sort(manysortQuery)
+    } else {
+      querys = querys.sort("createdAt")
     }
 
+    // feild query
+    if (req.query.feilds) {
+      const feildsort = req.query.feilds.split(",").join(" ")
+      querys = querys.select(feildsort)
+    }
+    else {
+      querys = querys.select("-__v")
+    }
 
-    const movies = await querySort
+    // page query 
+    const page = +req.query.page || 1;
+    const limit = +req.query.limit || 10;
+
+    const skip = (page - 1) * limit
+
+    querys = querys.skip(skip).limit(limit)
+
+    console.log(querys);
+
+
+
+    const movies = await querys
+
     res.status(200).json({
       status: "success",
       length: movies.length,

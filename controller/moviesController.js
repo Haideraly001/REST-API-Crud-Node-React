@@ -3,38 +3,63 @@ import moviesModal from "../model/moviemodal.js"
 
 const getMovies = async (req, res) => {
   try {
+    // console.log(req.query);
 
-    console.log(req.query);
-
-
-    // const movies = await moviesModal.find({ duration: req.query.duration * 1, rating: req.query.rating * 1 })
     // const movies = await moviesModal.find()
     //   .where("duration")
     //   .equals(req.query.duration)
-    //   .where("rating")
-    //   .equals(req.query.rating)
+    //   .where("releaseYear")
+    //   .equals(req.query.releaseYear)
+
+    // const movies = await moviesModal.find({ duration: +req.query.duration, releaseYear: +req.query.releaseYear })
+
+    // ---------------------
+    // const obj = JSON.stringify(req.query.name)
+
+    // const splitName = obj.replace(/"/g, '').split(/(?=[A-Z])/);
+    // const nowsplitjoin = splitName.join(" ")
+
+    // console.log(nowsplitjoin);
+
+    // const movies = await moviesModal.find({ name: nowsplitjoin })
+
+    // ---------------------------
+
+    // let exclusiveArray = { ...req.query }
+
+    // exclusiveArray = Object.keys(exclusiveArray)
 
 
-    // before sort 
-    // const movies = await moviesModal.find(req.query)
+    // const exclusiveArray = ['sort', 'page', 'limit']
+    // console.log(req.query);
 
-    const array = ["page", "limit", "sort",]
 
-    array.forEach((el) => {
-      delete req.query[el]
-    })
+    // let query = { ...req.query }
 
-    // console.log("after sort", req.query);
+    // exclusiveArray.forEach((el) => {
+    //   delete query[el]
+    // })
+    // ---------------------
 
-    // step4
     let queryObj = JSON.stringify(req.query)
-    queryObj = queryObj.replace(/\b(gte|lte|gt|lt)\b/g, (match) => `$${match}`)
-    const query = JSON.parse(queryObj)
-    console.log(query);
+    queryObj = queryObj.replace(/\b(gte|gt|lt|lte)\b/g, (match) => `$${match}`)
 
-    const movies = await moviesModal.find(query)
+    const queryData = JSON.parse(queryObj)
+
+    // -------------
+
+    console.log(req.query);
+    let querySort = moviesModal.find({})
+
+    if (req.query.sort) {
+      const splitmanySort = req.query.sort.split(",").join(" ")
+      console.log(splitmanySort);
+
+      querySort = querySort.sort(splitmanySort) // req.query.sort replace by price
+    }
 
 
+    const movies = await querySort
     res.status(200).json({
       status: "success",
       length: movies.length,
@@ -52,9 +77,10 @@ const postMovies = async (req, res) => {
       status: "success",
       data: newMovie
     })
-  } catch {
+  } catch (err) {
     res.status(500).json({
-      message: "Error creating movie"
+      message: "Error creating movie",
+      msg: err.message
     })
   }
 

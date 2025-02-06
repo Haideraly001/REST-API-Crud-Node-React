@@ -1,3 +1,4 @@
+//  this is query params all logic written by me 6 Feb 2025
 import moviesModal from "../model/moviemodal.js"
 
 
@@ -50,7 +51,7 @@ const getMovies = async (req, res) => {
     const getQuery = JSON.parse(querysort)
     // const movies = await moviesModal.find(getQuery)
 
-    // ------------------- sort logic
+    // ------------------- sort
     console.log(getQuery);
 
     let query = moviesModal.find()

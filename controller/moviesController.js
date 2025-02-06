@@ -1,9 +1,20 @@
-import { query } from "express"
 import moviesModal from "../model/moviemodal.js"
 
 
+
+const highestRated = (req, res, next) => {
+  req.query.limit = "4"
+  req.query.sort = "rating"
+  next()
+}
+
+
+
 const getMovies = async (req, res) => {
+
+
   try {
+
     // console.log(req.query);
 
     // step 1
@@ -33,19 +44,19 @@ const getMovies = async (req, res) => {
     // step5 for gte|lte|gt|lt
     // console.log(req.query);
 
-    // const query = JSON.stringify(req.query)
-    // let getQuery = query.replace(/(gte|lte|gt|lt)/g, (match) => `$${match}`);
+    let querysort = JSON.stringify(req.query)
+    querysort = querysort.replace(/(gte|lte|gt|lt)/g, (match) => `$${match}`);
 
-    // getQuery = JSON.parse(getQuery)
+    const getQuery = JSON.parse(querysort)
     // const movies = await moviesModal.find(getQuery)
 
     // ------------------- sort
+    console.log(getQuery);
+
     let query = moviesModal.find()
 
-    let querylist = req.query.sort
-
     if (req.query.sort) {
-      const multiputeQuery = querylist.split(",").join(" ");
+      const multiputeQuery = req.query.sort.split(",").join(" ");
       query = query.sort(multiputeQuery)
     } else {
       query = query.sort("createdAt")
@@ -58,12 +69,10 @@ const getMovies = async (req, res) => {
       query = query.select("-__v")
     }
 
-    if (req.query.page) {
-      const page = +req.query.page
-      const limit = +req.query.limit
-      const skip = (page - 1) * limit
-      query.skip(skip).limit(limit)
-    }
+    const page = +req.query.page
+    const limit = +req.query.limit
+    const skip = (page - 1) * limit
+    query.skip(skip).limit(limit)
 
 
     const movies = await moviesModal.find(query)
@@ -136,5 +145,6 @@ export {
   postMovies,
   getSpecificMovie,
   updateMovie,
-  deleteMovie
+  deleteMovie,
+  highestRated
 }

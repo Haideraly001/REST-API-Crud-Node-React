@@ -6,93 +6,75 @@ const getMovies = async (req, res) => {
   try {
     // console.log(req.query);
 
+    // step 1
     // const movies = await moviesModal.find()
     //   .where("duration")
-    //   .equals(req.query.duration)
-    //   .where("releaseYear")
-    //   .equals(req.query.releaseYear)
+    //   .equals(req.query.duration * 1)
+    //   .where("rating")
+    //   .equals(req.query.rating * 1)
 
-    // const movies = await moviesModal.find({ duration: +req.query.duration, releaseYear: +req.query.releaseYear })
+    // step 2
+    // const movies = await moviesModal.find({ rating: req.query.rating * 1 }) also can call two
 
-    // ---------------------
-    // const obj = JSON.stringify(req.query.name)
+    // step 3
+    // const movies = await moviesModal.find(req.query)
 
-    // const splitName = obj.replace(/"/g, '').split(/(?=[A-Z])/);
-    // const nowsplitjoin = splitName.join(" ")
-
-    // console.log(nowsplitjoin);
-
-    // const movies = await moviesModal.find({ name: nowsplitjoin })
-
-    // ---------------------------
-
-    // let exclusiveArray = { ...req.query }
-
-    // exclusiveArray = Object.keys(exclusiveArray)
-
-
-    // const exclusiveArray = ['sort', 'page', 'limit']
-    // console.log(req.query);
-
-
-    // let query = { ...req.query }
-
-    // exclusiveArray.forEach((el) => {
+    // step4
+    // const exclusiveFeild = ["sort", "page", "feild", "limit"]
+    // const query = { ...req.query }
+    // exclusiveFeild.forEach((el) => {
     //   delete query[el]
     // })
-    // ---------------------
 
-    let queryObj = JSON.stringify(req.query)
-    queryObj = queryObj.replace(/\b(gte|gt|lt|lte)\b/g, (match) => `$${match}`)
+    // console.log(query);
 
-    const queryData = JSON.parse(queryObj)
+    // const movies = await moviesModal.find(query)
 
-    // -------------
+    // step5 for gte|lte|gt|lt
+    // console.log(req.query);
 
+    // const query = JSON.stringify(req.query)
+    // let getQuery = query.replace(/(gte|lte|gt|lt)/g, (match) => `$${match}`);
 
+    // getQuery = JSON.parse(getQuery)
+    // const movies = await moviesModal.find(getQuery)
 
-    let querys = moviesModal.find()
+    // ------------------- sort
+    let query = moviesModal.find()
 
-    // sort query
+    let querylist = req.query.sort
+
     if (req.query.sort) {
-      let manysortQuery = req.query.sort
-      manysortQuery = manysortQuery.split(",").join(" ")
-      console.log(manysortQuery);
-      querys = querys.sort(manysortQuery)
+      const multiputeQuery = querylist.split(",").join(" ");
+      query = query.sort(multiputeQuery)
     } else {
-      querys = querys.sort("createdAt")
+      query = query.sort("createdAt")
     }
 
-    // feild query
-    if (req.query.feilds) {
-      const feildsort = req.query.feilds.split(",").join(" ")
-      querys = querys.select(feildsort)
-    }
-    else {
-      querys = querys.select("-__v")
+    if (req.query.feild) {
+      const multipuleFeild = req.query.feild.split(",").join(" ")
+      query = query.select(multipuleFeild)
+    } else {
+      query = query.select("-__v")
     }
 
-    // page query 
-    const page = +req.query.page || 1;
-    const limit = +req.query.limit || 10;
-
-    const skip = (page - 1) * limit
-
-    querys = querys.skip(skip).limit(limit)
-
-    console.log(querys);
+    if (req.query.page) {
+      const page = +req.query.page
+      const limit = +req.query.limit
+      const skip = (page - 1) * limit
+      query.skip(skip).limit(limit)
+    }
 
 
-
-    const movies = await querys
+    const movies = await moviesModal.find(query)
 
     res.status(200).json({
       status: "success",
       length: movies.length,
       data: movies,
     })
-  } catch {
-    res.status(500).json({ message: "Error fetching movies" })
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching movies", Error: err.message })
   }
 }
 

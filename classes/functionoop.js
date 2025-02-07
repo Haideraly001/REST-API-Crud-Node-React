@@ -1,30 +1,40 @@
-// function construnctor
+const Person = function (name, gender, birthYear) {
+  this.name = name
+  this.gender = gender
+  this.birthYear = birthYear
 
-const Person = function (name, gender, bornYear) {
-  this.name = name;
-  this.gender = gender;
-  this.bornYear = bornYear;
+  // samePart1
+  // this.calcul = function () {
+  //   const age = new Date().getFullYear() - this.birthYear
+  //   console.log("age", age);
+  // }
+
+}
+// samePart1
+Person.prototype.calcul = function () {
+  const age = new Date().getFullYear() - this.birthYear
+  console.log("age", age);
 }
 
-Person.prototype.calcul = function () {
-  let age = new Date().getFullYear() - this.bornYear
-  console.log(age);
+Person.prototype.steller = function () {
+  console.log("User Names");
 }
 
 const firstPerson = new Person("Haider", "Male", 1999)
+
 console.log(firstPerson);
 firstPerson.calcul()
+firstPerson.steller()
 
-const secondPerson = new Person("Steve", "male", 2001)
+const secondPerson = new Person("Alvin", "male", 2001)
 console.log(secondPerson);
 secondPerson.calcul()
 
-
 const obj = {
-  name: "alvin",
+  name: "abc",
   age: 23,
-  gender: "male"
+  user: "pew pew"
 }
 
-console.log(obj.hasOwnProperty("name"));
-
+const x = obj.hasOwnProperty("name")
+console.log(x);

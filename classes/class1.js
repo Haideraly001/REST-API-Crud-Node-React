@@ -1,40 +1,46 @@
-let Person = {
-  calcul() {
-    return new Date().getFullYear() - this.birthYear
-  },
+// -------function
+// const Person = function (name, gender, birthYear) {
+//   this.name = name;
+//   this.gender = gender;
+//   this.birthYear = birthYear;
 
-  greet() {
-    return "have a good day"
-  },
+//   this.calcul = function () {
+//     const a = new Date().getFullYear() - this.birthYear
+//     console.log(a);
+//   }
+// }
 
-  init(name, gender, birthYear) {
-    this.name = name,
-      this.gender = gender,
-      this.birthYear = birthYear
+// Person.prototype.bornCity = function () {
+//   console.log("New York");
+
+// }
+
+// const jenny = new Person("jenny", "female", 1996)
+// console.log(jenny);
+// jenny.calcul()
+// jenny.bornCity()
+
+// -----------class base
+
+class Person {
+  constructor(name, gender, birthYear) {
+    this.name = name;
+    this.gender = gender;
+    this.birthYear = birthYear;
   }
 
+  calcul() {
+    const age = new Date().getFullYear() - this.birthYear
+    console.log(age);
+  }
 }
 
-const personOne = Object.create(Person)
-personOne.name = "Haider Aly";
-personOne.birthYear = 1999;
-
-console.log(personOne);
-console.log(personOne.calcul());
-
-const personSecond = Object.create(Person, {
-  name: { value: "secondPerson" },
-  birthYear: { value: 1996 }
-})
-
-console.log(personSecond);
-console.log(personSecond.calcul());
-
-const mark = Object.create(Person)
-mark.init("mark", "male", 1998)
-
-console.log(mark);
-console.log(mark.calcul());
+Person.prototype.bornCity = function () {
+  console.log("Lahore");
+}
 
 
-
+const ahmad = new Person("Ahmad", "male", 1992)
+console.log(ahmad);
+ahmad.calcul()
+ahmad.bornCity()

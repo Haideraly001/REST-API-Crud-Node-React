@@ -134,4 +134,49 @@
 
 // 7th create an Object using Object.create method & inheritance in Object.create method
 
+const Person = {
+  calcul() {
+    return new Date().getFullYear() - this.birthYear
+  },
+
+  initDetail(name, gender, birthYear) {
+    this.name = name;
+    this.gender = gender;
+    this.birthYear = birthYear
+  }
+}
+
+
+// const Haider = Object.create(Person)
+// Haider.name = "Haider";
+// Haider.gender = "male";
+// Haider.birthYear = 1998;
+
+// const Haider = Object.create(Person, {
+//   name: { value: "Haider" },
+//   gender: { value: "male" },
+//   birthYear: { value: 1999 }
+// })
+
+// const Haider = Object.create(Person)
+
+// Haider.initDetail("Haider", "male", 1999)
+// console.log(Haider);
+// console.log(Haider.calcul());
+
+// // ------------- inheritance remianings
+
+// Haider.EmployeeInit = function (name, gender, birthYear, EmployeeID, EmployeeSalary) {
+//   Haider.initDetail.call(this, name, gender, birthYear)
+//   this.EmployeeID = EmployeeID;
+//   this.EmployeeSalary = EmployeeSalary;
+// }
+
+
+
+// const y = Object.create(Haider)
+// y.EmployeeInit("Jon Snow", "Male", 1994, 7834, 90000)
+// console.log(y);
+
+
 

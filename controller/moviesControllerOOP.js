@@ -14,6 +14,32 @@ const getMovies = async (req, res) => {
 
 
   try {
+    // step 1
+    // const movies = await moviesModal.find()
+    //   .where("duration")
+    //   .equals(req.query.duration * 1)
+    //   .where("rating")
+    //   .equals(req.query.rating * 1)
+
+    // step 2
+    // const movies = await moviesModal.find({ rating: req.query.rating * 1 }) also can call two
+
+    // step 3
+    // const movies = await moviesModal.find(req.query)
+
+    // step4
+    // const exclusiveFeild = ["sort", "page", "feild", "limit"]
+    // const query = { ...req.query }
+    // exclusiveFeild.forEach((el) => {
+    //   delete query[el]
+    // })
+
+    // console.log(query);
+
+    // const movies = await moviesModal.find(query)
+
+    // step5 for gte|lte|gt|lt
+    // console.log(req.query);
 
     let querysort = JSON.stringify(req.query)
     querysort = querysort.replace(/(gte|lte|gt|lt)/g, (match) => `$${match}`);
@@ -28,8 +54,6 @@ const getMovies = async (req, res) => {
 
 
     const { sort, field, page, limit, ...filters } = getQuery;
-
-    console.log("🚀 Parsed Query (Filters):", filters);
 
     let query = moviesModal.find(filters);
 

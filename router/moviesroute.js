@@ -1,5 +1,6 @@
 import express from "express"
-import { getMovies, postMovies, updateMovie, deleteMovie, highestRated, getSpecificMovie } from "../controller/moviesController.js"
+// import { getMovies, postMovies, updateMovie, deleteMovie, highestRated, getSpecificMovie } from "../controller/moviesController.js"
+import { getMovies, postMovies, updateMovie, deleteMovie, highestRated, getSpecificMovie } from "../controller/moviesControllerOOP.js"
 
 const router = express.Router()
 

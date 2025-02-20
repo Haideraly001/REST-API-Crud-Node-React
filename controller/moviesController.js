@@ -22,9 +22,29 @@ const getMovies = async (req, res) => {
     sortQuery = JSON.parse(sortQuery)
 
 
+    const { sort, field, limit, page, ...filters } = sortQuery
 
-    const movies = await moviesModal.find(sortQuery)
+    let filterQuery = moviesModal.find(filters)
+    console.log(sortQuery);
 
+    if (req.query.sort) {
+      const merge = req.query.sort.split(",").join(" ")
+      filterQuery = filterQuery.sort(merge)
+    }
+
+    if (req.query.field) {
+      const merge = req.query.field.split(",").join(" ")
+      filterQuery = filterQuery.select(merge)
+    }
+
+
+    const pageNum = req.query.page * 1
+    const limitNum = req.query.limit * 1
+
+    const skip = (pageNum - 1) * limitNum;
+    filterQuery.skip(skip).limit(limitNum)
+
+    const movies = await filterQuery
 
 
     res.status(200).json({

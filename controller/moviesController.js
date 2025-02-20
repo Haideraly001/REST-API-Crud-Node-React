@@ -12,10 +12,20 @@ const highestRated = (req, res, next) => {
 
 const getMovies = async (req, res) => {
 
-
   try {
 
-    const movies = await moviesModal.find()
+
+    let query = { ...req.query }
+
+    let sortQuery = JSON.stringify(query)
+    sortQuery = sortQuery.replace(/(gt|gte|lt|lte)/g, (match) => `$${match}`)
+    sortQuery = JSON.parse(sortQuery)
+
+
+
+    const movies = await moviesModal.find(sortQuery)
+
+
 
     res.status(200).json({
       status: "success",

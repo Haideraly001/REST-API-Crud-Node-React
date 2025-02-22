@@ -1,4 +1,5 @@
 import moviesModal from "../model/moviemodal.js"
+import ApiFeature from "../utility/feature.js"
 
 
 
@@ -13,38 +14,42 @@ const highestRated = (req, res, next) => {
 const getMovies = async (req, res) => {
 
   try {
+    const features = new ApiFeature(moviesModal.find(), req.query)
+      .filter()
+      .sort()
+      .field()
+      .page()
+
+    // let query = { ...req.query }
+
+    // let sortQuery = JSON.stringify(query)
+    // sortQuery = sortQuery.replace(/(gt|gte|lt|lte)/g, (match) => `$${match}`)
+    // sortQuery = JSON.parse(sortQuery)
 
 
-    let query = { ...req.query }
+    // const { sort, field, limit, page, ...filters } = sortQuery
 
-    let sortQuery = JSON.stringify(query)
-    sortQuery = sortQuery.replace(/(gt|gte|lt|lte)/g, (match) => `$${match}`)
-    sortQuery = JSON.parse(sortQuery)
+    // let filterQuery = moviesModal.find(filters)
+    // console.log(sortQuery);
 
+    // if (req.query.sort) {
+    //   const merge = req.query.sort.split(",").join(" ")
+    //   filterQuery = filterQuery.sort(merge)
+    // }
 
-    const { sort, field, limit, page, ...filters } = sortQuery
-
-    let filterQuery = moviesModal.find(filters)
-    console.log(sortQuery);
-
-    if (req.query.sort) {
-      const merge = req.query.sort.split(",").join(" ")
-      filterQuery = filterQuery.sort(merge)
-    }
-
-    if (req.query.field) {
-      const merge = req.query.field.split(",").join(" ")
-      filterQuery = filterQuery.select(merge)
-    }
+    // if (req.query.field) {
+    //   const merge = req.query.field.split(",").join(" ")
+    //   filterQuery = filterQuery.select(merge)
+    // }
 
 
-    const pageNum = req.query.page * 1
-    const limitNum = req.query.limit * 1
+    // const pageNum = req.query.page * 1
+    // const limitNum = req.query.limit * 1
 
-    const skip = (pageNum - 1) * limitNum;
-    filterQuery.skip(skip).limit(limitNum)
+    // const skip = (pageNum - 1) * limitNum;
+    // filterQuery.skip(skip).limit(limitNum)
 
-    const movies = await filterQuery
+    const movies = await features.query
 
 
     res.status(200).json({

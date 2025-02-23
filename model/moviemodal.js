@@ -1,4 +1,5 @@
 import mongoose from "mongoose"
+import fs from "fs"
 
 const movieScheema = new mongoose.Schema({
 
@@ -54,7 +55,44 @@ const movieScheema = new mongoose.Schema({
     type: String,
     requried: [true, "price feild is required"]
   }
+}, {
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
 })
+
+movieScheema.virtual("durationinHr").get(function () {
+  return this.duration / 60
+})
+
+// movieScheema.pre(/^find/, function (next) {
+//   this.find({ rating: { $gte: 9 } })
+//   this.startTime = Date.now()
+//   console.log("Haider1", this.startTime);
+
+//   next()
+// })
+
+// movieScheema.post(/^find/, function (doc, next) {
+//   this.find({ rating: { $gte: 9 } })
+//   this.endtime = Date.now()
+//   console.log("Haider2");
+
+
+//   const text = `The time ${this.endtime - this.startTime} starting to end to fetch the doc`
+//   try {
+//     fs.writeFile("./data.txt\n", text, (err) => {
+//       if (err) {
+//         console.log(err.message);
+//       }
+//     });
+//     console.log("Time logged to data.txt successfully.", this.endtime);
+//   } catch (err) {
+//     console.error("Error writing to file:", err.message);
+//   }
+//   next()
+// })
+
+
 
 const moviesModal = mongoose.model("firstMovies", movieScheema)
 export default moviesModal

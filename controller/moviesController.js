@@ -63,6 +63,37 @@ const getMoviesStates = async (req, res) => {
   }
 }
 
+const getMoviesGenre = async (req, res) => {
+  try {
+    const genereParams = req.params.genere
+    const movies = await moviesModal.aggregate([
+      { $unwind: "$genres" },
+      {
+        $group: {
+          "_id": "$genres",
+          movieCount: { $sum: 1 },
+          movies: { $push: "$name" }
+        }
+
+      },
+      { $addFields: { genres: "$_id" } },
+      { $project: { _id: 0 } },
+      { $sort: { movieCount: -1 } },
+      { $match: { genres: genereParams } }
+
+    ])
+    res.status(200).json({
+      status: "success",
+      length: movies.length,
+      data: movies,
+    })
+  } catch (err) {
+    res.status(500).json({
+      message: err.message
+    })
+  }
+}
+
 const postMovies = async (req, res) => {
   try {
     const newMovie = await moviesModal.create(req.body)
@@ -123,5 +154,6 @@ export {
   updateMovie,
   deleteMovie,
   highestRated,
-  getMoviesStates
+  getMoviesStates,
+  getMoviesGenre
 }

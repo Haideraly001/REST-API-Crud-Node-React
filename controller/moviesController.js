@@ -20,34 +20,6 @@ const getMovies = async (req, res) => {
       .field()
       .page()
 
-    // let query = { ...req.query }
-
-    // let sortQuery = JSON.stringify(query)
-    // sortQuery = sortQuery.replace(/(gt|gte|lt|lte)/g, (match) => `$${match}`)
-    // sortQuery = JSON.parse(sortQuery)
-
-
-    // const { sort, field, limit, page, ...filters } = sortQuery
-
-    // let filterQuery = moviesModal.find(filters)
-    // console.log(sortQuery);
-
-    // if (req.query.sort) {
-    //   const merge = req.query.sort.split(",").join(" ")
-    //   filterQuery = filterQuery.sort(merge)
-    // }
-
-    // if (req.query.field) {
-    //   const merge = req.query.field.split(",").join(" ")
-    //   filterQuery = filterQuery.select(merge)
-    // }
-
-
-    // const pageNum = req.query.page * 1
-    // const limitNum = req.query.limit * 1
-
-    // const skip = (pageNum - 1) * limitNum;
-    // filterQuery.skip(skip).limit(limitNum)
 
     const movies = await features.query
 
@@ -59,6 +31,35 @@ const getMovies = async (req, res) => {
     })
   } catch (err) {
     res.status(500).json({ message: "Error fetching movies", Error: err.message })
+  }
+}
+
+const getMoviesStates = async (req, res) => {
+  try {
+    const moviesStates = await moviesModal.aggregate([
+      { $match: { rating: { $gte: 7 } } },
+      {
+        $group: {
+          "_id": "$releaseYear",
+          avgRating: { $avg: "$rating" },
+          avgprice: { $avg: "$price" },
+          avgtotalRating: { $avg: "$totalRating" },
+          moviesCount: { $sum: 1 },
+          sumPrice: { $sum: "$price" }
+        }
+
+      },
+      { $sort: { avgRating: 1 } }
+    ])
+    res.status(200).json({
+      status: "success",
+      length: moviesStates.length,
+      data: moviesStates,
+    })
+  } catch (err) {
+    res.status(500).json({
+      message: err.message
+    })
   }
 }
 
@@ -121,5 +122,6 @@ export {
   getSpecificMovie,
   updateMovie,
   deleteMovie,
-  highestRated
+  highestRated,
+  getMoviesStates
 }

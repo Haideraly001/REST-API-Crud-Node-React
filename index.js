@@ -4,6 +4,7 @@ import dotenv from "dotenv"
 import { fileURLToPath } from 'url';
 import path from "path"
 import movieRouter from "./router/moviesroute.js"
+import authUser from './router/userRouter.js'
 import cors from "cors";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -37,5 +38,6 @@ mongoose.connect(dbConnect)
 app.use(express.static(path.join((__dirname, "./app/client/build"))))
 
 app.use("/api/movies", movieRouter)
+app.use('/api/user', authUser)
 
 app.listen(port)

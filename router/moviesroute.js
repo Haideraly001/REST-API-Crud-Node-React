@@ -5,6 +5,7 @@ const router = express.Router()
 
 router.use(express.json())
 
+
 router.get("/higest-rated", highestRated, getMovies)
 
 router.get("/getmovies-state", getMoviesStates)

@@ -2,46 +2,46 @@ import mongoose from "mongoose";
 import validator from "validator"
 import bcrypt from "bcrypt"
 
-const userSchemma = new mongoose.Schema({
+const userScheema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, "Please Enter an Name"]
+    require: [true, "Please Enter an Name"]
   },
   email: {
     type: String,
-    required: [true, "please Enter an email"],
+    require: [true, "please Enter an Email"],
     unique: true,
-    isLowercase: true,
-    validator: [validator.isEmail, "please Enter an valid email"]
+    validator: [validator.isEmail, "please Enter an valid Email"],
+    isLowercase: true
   },
-  photo: String,
   password: {
     type: String,
-    required: [true, "please Enter an password"],
+    require: [true, "please Enter an password"],
     minlength: 8,
   },
   confirmPassword: {
     type: String,
-    required: [true, "please Enter an confirm password"],
+    require: [true, "please Enter an password"],
     minlength: 8,
     validate: {
       validator: function (val) {
-        return val == this.password
+        return val === this.password
       },
-      message: "password & conform password does not match"
-    },
+      message: "Password and conformPassword not match"
+    }
+  }
 
-  },
 })
 
-
-userSchemma.pre('save', async function (next) {
+userScheema.pre('save', async function (next) {
   if (!this.isModified('password')) return next()
 
-  this.password = await bcrypt.hash(this.password, 10);
+  this.password = await bcrypt.hash(this.password, 12);
   this.confirmPassword = undefined;
   next()
 })
 
-const userModel = mongoose.model("users", userSchemma)
-export default userModel;
+
+
+const userModel = mongoose.model("users", userScheema)
+export default userModel

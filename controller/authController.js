@@ -1,9 +1,8 @@
 import userModel from '../model/usermodal.js'
 import jwt from 'jsonwebtoken'
-import bcrypt from 'bcrypt'
 
 const signtoken = async (id) => {
-  return jwt.sign({ id: id }, 'shh98-adlk4-nvxcn3', {
+  return jwt.sign({ id: id }, process.env.token_Str, {
     expiresIn: 1000000
   });
 }
@@ -40,7 +39,6 @@ const loginAuth = async (req, res, next) => {
     }
     const user = await userModel.findOne({ email: email }).select('+password')
     const isMatch = await user.isComparePassword(password, user.password);
-    // const isMatch = await bcrypt.compare(password, user.password)
 
     if (!isMatch) {
       res.status(401).json({
@@ -52,7 +50,7 @@ const loginAuth = async (req, res, next) => {
     const token = await signtoken(user._id)
 
     res.status(200).json({
-      message: "success",
+      message: "login success",
       user: user,
       token: token,
     })

@@ -1,5 +1,10 @@
 import moviesModal from "../model/moviemodal.js"
 import ApiFeature from "../utility/feature.js"
+import jwt from "jsonwebtoken"
+import util from "util"
+import dotenv from "dotenv";
+
+dotenv.config();
 
 
 
@@ -9,6 +14,34 @@ const highestRated = (req, res, next) => {
   next()
 }
 
+const protectRoute = async (req, res, next) => {
+  try {
+    // 1 read the token and check if its exist 
+    let token = req.headers.authorization
+    if (token && token.startsWith("bearer ")) {
+      token = token.split(" ")[1];
+    }
+    console.log("token", token);
+
+    // 2 validate the token
+    const valid = jwt.verify(token, process.env.token_Str)
+    console.log(valid);
+
+    // 3 if the user exist
+
+    // 4 allow user to access routes
+    next()
+  } catch (err) {
+    console.error("JWT Verification Error:", err.message);
+    res.status(402).json({
+      message: "failed",
+      error: err.message
+    })
+
+  }
+
+
+}
 
 
 const getMovies = async (req, res) => {
@@ -155,5 +188,6 @@ export {
   deleteMovie,
   highestRated,
   getMoviesStates,
-  getMoviesGenre
+  getMoviesGenre,
+  protectRoute
 }

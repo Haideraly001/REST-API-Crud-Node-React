@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken'
 
 const signtoken = async (id) => {
   return jwt.sign({ id: id }, process.env.token_Str, {
-    expiresIn: 1000000
+    expiresIn: 10000
   });
 }
 

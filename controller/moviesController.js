@@ -1,11 +1,7 @@
 import moviesModal from "../model/moviemodal.js"
 import ApiFeature from "../utility/feature.js"
 import jwt from "jsonwebtoken"
-import util from "util"
-import dotenv from "dotenv";
-
-dotenv.config();
-
+import userModal from "../model/usermodal.js"
 
 
 const highestRated = (req, res, next) => {
@@ -14,33 +10,40 @@ const highestRated = (req, res, next) => {
   next()
 }
 
-const protectRoute = async (req, res, next) => {
+const protectedRoute = async (req, res, next) => {
+
   try {
-    // 1 read the token and check if its exist 
+    // 1. check if the token is given or not 
     let token = req.headers.authorization
-    if (token && token.startsWith("bearer ")) {
-      token = token.split(" ")[1];
+    if (token && token.startsWith("bearer")) {
+      token = token.split(" ")[1]
     }
-    console.log("token", token);
 
-    // 2 validate the token
+    // 2. verifed the token 
     const valid = jwt.verify(token, process.env.token_Str)
-    console.log(valid);
+    console.log("valid ", valid);
 
-    // 3 if the user exist
+    if (valid) {
+      const date = new Date(valid.exp * 1000)
+      const Idate = new Date(valid.iat * 1000)
+      console.log(date.toLocaleString());
+      console.log(Idate.toLocaleString());
+    }
 
-    // 4 allow user to access routes
+    //  check if the user exit or not 
+    const user = await userModal.findOne({ _id: valid.id })
+    if (!user) {
+      res.status(402).json({
+        message: "user not exit"
+      })
+    }
     next()
+
   } catch (err) {
-    console.error("JWT Verification Error:", err.message);
-    res.status(402).json({
-      message: "failed",
-      error: err.message
+    res.status(401).json({
+      message: err.message === "jwt expired" ? "Please Login again your token expire" : err.message
     })
-
   }
-
-
 }
 
 
@@ -189,5 +192,5 @@ export {
   highestRated,
   getMoviesStates,
   getMoviesGenre,
-  protectRoute
+  protectedRoute,
 }

@@ -1,5 +1,5 @@
 import express from "express"
-import { getMovies, postMovies, updateMovie, deleteMovie, getMoviesGenre, getMoviesStates, highestRated, getSpecificMovie, protectRoute } from "../controller/moviesController.js"
+import { getMovies, postMovies, updateMovie, deleteMovie, getMoviesGenre, getMoviesStates, highestRated, getSpecificMovie, protectedRoute } from "../controller/moviesController.js"
 
 const router = express.Router()
 
@@ -10,7 +10,7 @@ router.get("/higest-rated", highestRated, getMovies)
 
 router.get("/getmovies-state", getMoviesStates)
 router.get("/getmovies-genre/:genere", getMoviesGenre)
-router.get("/", protectRoute, getMovies)
+router.get("/", protectedRoute, getMovies)
 router.post("/", postMovies)
 
 router.get("/:id", getSpecificMovie)

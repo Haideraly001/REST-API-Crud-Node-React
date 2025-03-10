@@ -2,51 +2,49 @@ import mongoose from "mongoose";
 import validator from "validator"
 import bcrypt from "bcrypt"
 
-const userScheema = new mongoose.Schema({
+
+const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    require: [true, "Please Enter an Name"]
+    require: [true, "name feild is required"]
   },
   email: {
     type: String,
-    require: [true, "please Enter an Email"],
+    require: [true, "email feild is required"],
     unique: true,
-    validator: [validator.isEmail, "please Enter an valid Email"],
-    isLowercase: true
+    lowercase: true,
+    validate: [validator.isEmail, "email feild is not email"]
   },
   password: {
     type: String,
-    require: [true, "please Enter an password"],
-    minlength: 8,
-    select: false
+    require: [true, "password feild is required"],
+    select: false,
   },
   confirmPassword: {
     type: String,
-    require: [true, "please Enter an password"],
-    minlength: 8,
+    require: [true, "confirmPassword feild is require"],
     validate: {
       validator: function (val) {
         return val === this.password
       },
-      message: "Password and conformPassword not match"
+      message: "password is not matching"
     }
   }
-
 })
 
-userScheema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next()
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
 
-  this.password = await bcrypt.hash(this.password, 12);
-  this.confirmPassword = undefined;
+  this.password = await bcrypt.hash(this.password, 8)
+  this.confirmPassword = undefined
   next()
+
 })
 
-userScheema.methods.isComparePassword = async function (password, passwordDB) {
-  return await bcrypt.compare(password, passwordDB)
+userSchema.methods.isComparePass = async function (pass, passDB) {
+  return await bcrypt.compare(pass, passDB)
 }
 
+const userModal = mongoose.model("users", userSchema)
 
-
-const userModel = mongoose.model("users", userScheema)
-export default userModel
+export default userModal

@@ -29,7 +29,6 @@ const protectedRoute = async (req, res, next) => {
       console.log(date.toLocaleString());
       console.log(Idate.toLocaleString());
 
-
     }
 
     // 3. check if the user exit or not 

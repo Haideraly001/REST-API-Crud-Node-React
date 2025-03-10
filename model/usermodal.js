@@ -29,7 +29,11 @@ const userSchema = new mongoose.Schema({
       },
       message: "password is not matching"
     }
-  }
+  },
+  passwordChangeAt: {
+    type: Date,
+    default: new Date()
+  },
 })
 
 userSchema.pre('save', async function (next) {
@@ -38,8 +42,19 @@ userSchema.pre('save', async function (next) {
   this.password = await bcrypt.hash(this.password, 8)
   this.confirmPassword = undefined
   next()
-
 })
+
+userSchema.methods.isPassChange = async function (jwtTime) {
+  console.log("jwttime ", jwtTime);
+  const passwordChangeAt = parseInt(this.passwordChangeAt.getTime() / 1000)
+  console.log("this change pass ", passwordChangeAt);
+  // If the comparison is true its mean password is change 
+  // jwt time is always should greater  <  passwordChange  password change time
+
+  return jwtTime < passwordChangeAt
+  // means in the compasone jwt time stemp should always be greate then password iat
+
+}
 
 userSchema.methods.isComparePass = async function (pass, passDB) {
   return await bcrypt.compare(pass, passDB)

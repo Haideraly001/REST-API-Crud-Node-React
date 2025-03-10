@@ -28,6 +28,8 @@ const protectedRoute = async (req, res, next) => {
       const Idate = new Date(valid.iat * 1000)
       console.log(date.toLocaleString());
       console.log(Idate.toLocaleString());
+
+
     }
 
     // 3. check if the user exit or not 
@@ -37,6 +39,18 @@ const protectedRoute = async (req, res, next) => {
         message: "user not exit"
       })
     }
+
+    // 4. password change ur not 
+
+    const changePass = await user.isPassChange(valid.iat)
+    if (changePass) {
+      res.status(402).json({
+        message: "password has change you should login again"
+      })
+    }
+
+    // 5. protected route 
+    req.user = user
     next()
 
   } catch (err) {

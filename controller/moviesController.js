@@ -30,7 +30,7 @@ const protectedRoute = async (req, res, next) => {
       console.log(Idate.toLocaleString());
     }
 
-    //  check if the user exit or not 
+    // 3. check if the user exit or not 
     const user = await userModal.findOne({ _id: valid.id })
     if (!user) {
       res.status(402).json({

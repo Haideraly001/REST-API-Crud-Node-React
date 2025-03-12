@@ -1,28 +1,27 @@
-import userModal from "../model/usermodal.js";
-import jwt from "jsonwebtoken"
+import userModel from "../model/usermodal.js";
+import jwt from 'jsonwebtoken'
+import bcrypt from 'bcrypt'
 
-const tokenAssign = (id) => {
+
+const assignToken = (id) => {
   return jwt.sign({ id: id }, process.env.token_Str, {
     expiresIn: "5m",
   });
 }
 
-
-
 const authUser = async (req, res) => {
   try {
-    const body = req.body
-    const user = await userModal.create(body);
+    const user = await userModel.create(req.body);
 
-    const token = tokenAssign(user._id)
+    const token = assignToken(user._id)
     res.status(201).json({
-      message: "true",
+      message: "create user",
       token: token,
       user: user
     })
   } catch (err) {
     res.status(401).json({
-      message: "fail",
+      message: 'fail',
       error: err.message
     })
   }
@@ -30,42 +29,32 @@ const authUser = async (req, res) => {
 
 const loginAuth = async (req, res) => {
   try {
-    const { email, password } = req.body
-    const user = await userModal.findOne({ email: email }).select('+password')
-    if (!user) {
-      res.status(401).json({
-        message: "user not founds",
-        error: err.message
-      })
+    const { password, email } = req.body
+    const user = await userModel.findOne({ email: email }).select("+password")
+    // const compare = bcrypt.compare(password, user.password)
+    const compare = user.comparePassword(password, user.password)
+    let token
+    if (compare) {
+      token = assignToken(user._id)
     }
-
-
-    const isMatch = await user.isComparePass(password, user.password)
-    if (!isMatch) {
-      res.status(401).json({
-        message: "user not password not match",
-        error: err.message
-      })
-    }
-
     user.password = undefined
-    const token = tokenAssign(user._id)
-
     res.status(201).json({
-      message: "true",
-      token,
+      status: "user login success",
+      token: token,
       user: user
     })
+
   } catch (err) {
     res.status(401).json({
-      message: "fail",
+      message: 'fail',
       error: err.message
     })
   }
-
 }
 
+
+
+
 export {
-  loginAuth,
-  authUser
+  authUser, loginAuth
 }

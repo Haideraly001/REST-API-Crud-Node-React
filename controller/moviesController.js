@@ -11,52 +11,46 @@ const highestRated = (req, res, next) => {
 }
 
 const protectedRoute = async (req, res, next) => {
-
   try {
-    // 1. check if the token is given or not 
+
+    // 1. firs check the user has token or not 
     let token = req.headers.authorization
-    if (token && token.startsWith("bearer")) {
-      token = token.split(" ")[1]
+    token = token.split(" ")[1]
+
+    // 2. verfity the token 
+    const isVerify = jwt.verify(token, process.env.token_Str)
+    if (isVerify) {
+      console.log(isVerify);
+      // console.log("expire time", new Date(isVerify.exp * 1000).toLocaleString());
     }
 
-    // 2. verifed the token 
-    const valid = jwt.verify(token, process.env.token_Str)
-    console.log("valid ", valid);
+    // 3 check the user exist ur not 
+    const user = await userModal.findOne({ _id: isVerify.id })
 
-    if (valid) {
-      const date = new Date(valid.exp * 1000)
-      const Idate = new Date(valid.iat * 1000)
-      console.log(date.toLocaleString());
-      console.log(Idate.toLocaleString());
-
-    }
-
-    // 3. check if the user exit or not 
-    const user = await userModal.findOne({ _id: valid.id })
     if (!user) {
-      res.status(402).json({
-        message: "user not exit"
+      res.status(401).json({
+        message: "User not Exist"
       })
     }
 
-    // 4. password change ur not 
-
-    const changePass = await user.isPassChange(valid.iat)
-    if (changePass) {
+    // 4. check if the password change or not 
+    const changetime = await user.passwordChangeCheck(isVerify.iat)
+    if (changetime) {
       res.status(402).json({
         message: "password has change you should login again"
       })
     }
 
-    // 5. protected route 
+    // 5. protected Route
     req.user = user
-    next()
 
+    next()
   } catch (err) {
     res.status(401).json({
-      message: err.message === "jwt expired" ? "Please Login again your token expire" : err.message
+      message: err.message === "jwt expired" && "token is expaire"
     })
   }
+
 }
 
 

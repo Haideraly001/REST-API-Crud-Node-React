@@ -52,9 +52,27 @@ const loginAuth = async (req, res) => {
   }
 }
 
+const forgetAuth = async (req, res, next) => {
+
+  //1 if user exist of not  found user 
+  const user = await userModel.findOne({
+    email: req.body.email
+  })
+
+  if (!user) {
+    res.status(401).json({
+      status: "user not found",
+    })
+  }
+
+  const token = user.generateResetPasswrodToken()
+  console.log("token in authcontroller", token);
+  await user.save()
+
+}
 
 
 
 export {
-  authUser, loginAuth
+  authUser, loginAuth, forgetAuth
 }

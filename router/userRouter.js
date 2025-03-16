@@ -8,5 +8,6 @@ router.use(express.json())
 router.post('/signup', authUser)
 router.post('/login', loginAuth)
 router.post('/forgetPassword', forgetAuth)
+// router.post('/ResetPassword', forgetAuth)
 
 export default router

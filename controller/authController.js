@@ -1,6 +1,7 @@
 import userModel from "../model/usermodal.js";
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
+import { sendEmail } from "../utility/email.js";
 
 
 const assignToken = (id) => {
@@ -65,9 +66,32 @@ const forgetAuth = async (req, res, next) => {
     })
   }
 
+  // 2 create token 
+
   const token = user.generateResetPasswrodToken()
-  console.log("token in authcontroller", token);
   await user.save()
+
+  // 3 send token back to the user email
+  const email = `${req.protocol}://${req.get('host')}/api/user/ResetPassword${token}`
+  const message = ` receive an password reset Request. want to reset your password ${email}`
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: 'password reset request',
+      message: message
+    })
+
+    res.status(201).json({
+      status: "success",
+      messaeg: "reset mail has been send"
+    })
+
+  }
+  catch (err) {
+    res.status(401).json({
+      status: "user not found",
+    })
+  }
 
 }
 

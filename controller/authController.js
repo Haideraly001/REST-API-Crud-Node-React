@@ -72,13 +72,14 @@ const forgetAuth = async (req, res, next) => {
   await user.save()
 
   // 3 send token back to the user email
-  const email = `${req.protocol}://${req.get('host')}/api/user/ResetPassword${token}`
-  const message = ` receive an password reset Request. want to reset your password ${email}`
+  const email = `${req.protocol}://${req.get('host')}/api/user/resetPassword/${token}`
+  const message = ` receive an password reset Request. want to reset your password click on the link ${email}`
   try {
     await sendEmail({
       email: user.email,
       subject: 'password reset request',
-      message: message
+      message: message,
+      from: process.env.from
     })
 
     res.status(201).json({
@@ -95,8 +96,57 @@ const forgetAuth = async (req, res, next) => {
 
 }
 
+const resetPassword = async (req, res, next) => {
+  try {
+    const token = req.params.token
+    console.log(token);
+
+    const user = await userModel.findOne({
+      passwordResetToken: token,
+      // passwordResetTokenExpire: {$gt: Date.now()}
+    }).select("+password")
+
+    if (!user) {
+      res.status(401).json({
+        status: "user not found with find token ",
+      })
+    }
+
+    const userTime = user.passwordResetTokenExpire.getTime()
+    console.log(userTime, Date.now());
+
+
+    if (userTime < Date.now()) {
+      return res.status(401).json({
+        status: "Token has been expire",
+        error: err.message
+      })
+    }
+
+    console.log("abc");
+
+
+    user.password = req.body.password;
+    user.confirmPassword = req.body.confirmPassword;
+    user.comparePassword(req.body.password, user.password);
+
+    user.passwordResetToken = undefined;
+    user.passwordResetTokenExpire = undefined;
+    await user.save();
+
+    res.status(201).json({
+      status: "user hass reset"
+    })
+  } catch (err) {
+    res.status(401).json({
+      status: "user not found",
+      error: err.message
+    })
+  }
+}
+
 
 
 export {
-  authUser, loginAuth, forgetAuth
+  authUser, loginAuth, forgetAuth, resetPassword
 }

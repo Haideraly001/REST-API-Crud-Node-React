@@ -108,7 +108,7 @@ const resetPassword = async (req, res, next) => {
 
     if (!user) {
       res.status(401).json({
-        status: "user not found with find token ",
+        status: "user not found with token ",
       })
     }
 
@@ -123,15 +123,13 @@ const resetPassword = async (req, res, next) => {
       })
     }
 
-    console.log("abc");
-
-
     user.password = req.body.password;
     user.confirmPassword = req.body.confirmPassword;
-    user.comparePassword(req.body.password, user.password);
+    // user.comparePassword(req.body.password, user.password);
 
     user.passwordResetToken = undefined;
     user.passwordResetTokenExpire = undefined;
+    user.passwordChangeAt = Date.now()
     await user.save();
 
     res.status(201).json({

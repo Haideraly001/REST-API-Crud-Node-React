@@ -188,13 +188,10 @@ const resetPassword = async (req, res, next) => {
 }
 
 
-const changePassword = async (req, res, next) => {
+const changePassword = async (req, res) => {
   try {
-    console.log(req.body);
-
     // "GET current user from database"
     const user = await userModel.findById(req.user.id).select("+password")
-    console.log(user);
 
 
     // "check the given password is match with the login user"
@@ -211,6 +208,7 @@ const changePassword = async (req, res, next) => {
     // if the supplier is correct update the user Password with the value
     user.password = req.body.newPassword
     user.confirmPassword = req.body.confirmPassword
+    const token = assignToken(user.id)
     await user.save();
 
     // second methods is 
@@ -225,7 +223,8 @@ const changePassword = async (req, res, next) => {
 
     res.status(201).json({
       status: "success",
-      date: "password update"
+      date: "password update",
+      token: token
 
     })
   } catch (err) {

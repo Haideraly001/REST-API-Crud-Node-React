@@ -135,6 +135,7 @@ const resetPassword = async (req, res, next) => {
     res.status(201).json({
       status: "user hass reset"
     })
+
   } catch (err) {
     res.status(401).json({
       status: "user not found",

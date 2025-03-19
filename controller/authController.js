@@ -256,9 +256,12 @@ const updateMe = async (req, res, next) => {
       return newObj
     }
 
-    const filterobj = filterReqObj(req.body, "name", "email")
+    const filterobj = filterReqObj(req.body, "name",)
+    console.log("filterobj", filterobj);
+
 
     const updateUserDetails = await userModel.findByIdAndUpdate(req.user.id, filterobj, { runValidators: true, new: true })
+    const token = assignToken(req.user.id)
     res.status(201).json({
       status: "success",
       date: "userupdate update",

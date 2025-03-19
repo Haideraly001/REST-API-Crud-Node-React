@@ -7,6 +7,6 @@ router.use(express.json())
 
 
 router.patch("/changePassword", protectedRoute, changePassword)
-router.patch("/updateMe", protectedRoute, updateMe)
+router.post("/updateMe", protectedRoute, updateMe)
 
 export default router

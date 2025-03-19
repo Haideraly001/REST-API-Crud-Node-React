@@ -6,8 +6,51 @@ import { sendEmail } from "../utility/email.js";
 
 const assignToken = (id) => {
   return jwt.sign({ id: id }, process.env.token_Str, {
-    expiresIn: "5m",
+    expiresIn: "15m",
   });
+}
+
+const protectedRoute = async (req, res, next) => {
+  try {
+
+    // 1. firs check the user has token or not 
+    let token = req.headers.authorization
+    token = token.split(" ")[1]
+
+    // 2. verfity the token 
+    const isVerify = jwt.verify(token, process.env.token_Str)
+    if (isVerify) {
+      console.log("isverify", isVerify);
+      // console.log("expire time", new Date(isVerify.exp * 1000).toLocaleString());
+    }
+
+    // 3 check the user exist ur not 
+    const user = await userModel.findOne({ _id: isVerify.id })
+
+    if (!user) {
+      res.status(401).json({
+        message: "User not Exist"
+      })
+    }
+
+    // 4. check if the password change or not 
+    const changetime = await user.passwordChangeCheck(isVerify.iat)
+    if (changetime) {
+      res.status(402).json({
+        message: "password has change you should login again"
+      })
+    }
+
+    // 5. protected Route
+    req.user = user
+
+    next()
+  } catch (err) {
+    res.status(401).json({
+      message: err.message === "jwt expired" && "token is expaire"
+    })
+  }
+
 }
 
 const authUser = async (req, res) => {
@@ -145,7 +188,63 @@ const resetPassword = async (req, res, next) => {
 }
 
 
+const changePassword = async (req, res, next) => {
+  try {
+    console.log(req.body);
+
+    // "GET current user from database"
+    const user = await userModel.findById(req.user.id).select("+password")
+    console.log(user);
+
+
+    // "check the given password is match with the login user"
+    const compare = await user.comparePassword(req.body.currentPassword, user.password)
+
+    if (!compare) {
+      res.status(402).json({
+        status: "fail",
+        error: "user password not compare"
+
+      })
+    }
+
+    // if the supplier is correct update the user Password with the value
+    user.password = req.body.newPassword
+    user.confirmPassword = req.body.confirmPassword
+    await user.save();
+
+    // second methods is 
+    // const update = await userModel.updateOne(
+    // { _id: req.user.id }, 
+    // { $set : {password, req.body.newPassword}}
+    // )
+    // same with findOneandUpdate
+    // Without $set → Entire document is replaced with the new object (risky).
+    // With $set → Only specified fields are updated, keeping everything else safe.
+
+
+    res.status(201).json({
+      status: "success",
+      date: "password update"
+
+    })
+  } catch (err) {
+    res.status(401).json({
+      status: "fail",
+      error: err.message
+
+    })
+  }
+
+}
+
+const updateMe = async (req, res, next) => {
+
+}
+
+
+
 
 export {
-  authUser, loginAuth, forgetAuth, resetPassword
+  authUser, loginAuth, forgetAuth, resetPassword, changePassword, updateMe, protectedRoute
 }

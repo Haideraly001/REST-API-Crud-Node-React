@@ -20,7 +20,7 @@ const protectedRoute = async (req, res, next) => {
     // 2. verfity the token 
     const isVerify = jwt.verify(token, process.env.token_Str)
     if (isVerify) {
-      console.log(isVerify);
+      // console.log(isVerify);
       // console.log("expire time", new Date(isVerify.exp * 1000).toLocaleString());
     }
 

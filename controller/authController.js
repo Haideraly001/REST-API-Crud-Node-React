@@ -76,21 +76,25 @@ const loginAuth = async (req, res) => {
     const { password, email } = req.body
     const user = await userModel.findOne({ email: email }).select("+password")
     // const compare = bcrypt.compare(password, user.password)
-    const compare = user.comparePassword(password, user.password)
-    let token
-    if (compare) {
-      token = assignToken(user._id)
+    const compare = await user.comparePassword(password, user.password)
+
+    if (!compare) {
+      return res.status(401).json({
+        message: 'password not compare',
+      })
     }
+    const token = assignToken(user._id)
+    console.log("login success");
     user.password = undefined
-    res.status(201).json({
+    return res.status(201).json({
       status: "user login success",
-      token: token,
-      user: user
+      user: user,
+      token: token
     })
 
   } catch (err) {
     res.status(401).json({
-      message: 'fail',
+      message: 'user login failed',
       error: err.message
     })
   }
@@ -187,18 +191,16 @@ const resetPassword = async (req, res, next) => {
   }
 }
 
-
 const changePassword = async (req, res) => {
   try {
     // "GET current user from database"
     const user = await userModel.findById(req.user.id).select("+password")
 
-
     // "check the given password is match with the login user"
     const compare = await user.comparePassword(req.body.currentPassword, user.password)
 
     if (!compare) {
-      res.status(402).json({
+      return res.status(402).json({
         status: "fail",
         error: "user password not compare"
 
@@ -238,6 +240,38 @@ const changePassword = async (req, res) => {
 }
 
 const updateMe = async (req, res, next) => {
+  try {
+
+    // check is user sending password || conform password
+
+    // update user
+
+    const filterReqObj = (obj, ...allowOJB) => {
+      const newObj = {}
+      Object.keys(obj).forEach((el) => {
+        if (allowOJB.includes(el)) {
+          newObj[el] = obj[el]
+        }
+      })
+      return newObj
+    }
+
+    const filterobj = filterReqObj(req.body, "name", "email")
+
+    const updateUserDetails = await userModel.findByIdAndUpdate(req.user.id, filterobj, { runValidators: true, new: true })
+    res.status(201).json({
+      status: "success",
+      date: "userupdate update",
+      token: token
+
+    })
+  } catch (err) {
+    res.status(401).json({
+      status: "fail",
+      error: err.message
+
+    })
+  }
 
 }
 

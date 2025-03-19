@@ -6,7 +6,7 @@ const router = express.Router()
 router.use(express.json())
 
 
-router.post("/changePassword", protectedRoute, changePassword)
-router.post("/updateMe", protectedRoute, updateMe)
+router.patch("/changePassword", protectedRoute, changePassword)
+router.patch("/updateMe", protectedRoute, updateMe)
 
 export default router

@@ -1,6 +1,7 @@
 import nodemailer from "nodemailer"
 
 
+
 const sendEmail = async (option) => {
   const transport = nodemailer.createTransport({
     host: "sandbox.smtp.mailtrap.io",
@@ -9,6 +10,7 @@ const sendEmail = async (option) => {
       user: "88554b773b0dec",
       pass: "eecd8ae41fab47"
     }
+
   });
   const emailMessage = {
     from: option.from,

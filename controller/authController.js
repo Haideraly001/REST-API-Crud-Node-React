@@ -119,7 +119,7 @@ const forgetAuth = async (req, res, next) => {
   await user.save()
 
   // 3 send token back to the user email
-  const email = `${req.protocol}://${req.get('host')}/api/user/resetPassword/${token}`
+  const email = `${req.protocol}://${req.get('host')}/api/auth/resetPassword/${token}`
   const message = ` receive an password reset Request. want to reset your password click on the link ${email}`
   try {
     await sendEmail({

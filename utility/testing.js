@@ -4,3 +4,4 @@ const obj = {
 }
 
 console.log(obj.name.split(",").join(""));
+console.log(obj.name.split(",").join(""));

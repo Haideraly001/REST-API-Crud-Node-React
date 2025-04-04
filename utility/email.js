@@ -1,29 +1,48 @@
 import nodemailer from "nodemailer"
 
 
+const emailSender = async (option) => {
+  try {
+    // mailTrap
+    // const transporter = nodemailer.createTransport({
+    //   host: process.env.local.SMTP_MailTrap_HOST,
+    //   port: process.env.local.SMTP_MailTrap_PORT,
+    //   secure: false,
+    //   auth: {
+    //     user: process.env.local.SMTP_MailTrap_USER,
+    //     pass: process.env.local.SMTP_MailTrap_PASS,
+    //   },
+    // });
 
-const sendEmail = async (option) => {
-  const transport = nodemailer.createTransport({
-    host: "sandbox.smtp.mailtrap.io",
-    port: 2525,
-    auth: {
-      user: "88554b773b0dec",
-      pass: "eecd8ae41fab47"
-    }
 
-  });
-  const emailMessage = {
-    from: option.from,
-    to: option.email,
-    subject: option.subject,
-    text: option.message,
-    // html: option.html,
+    // brevo 
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_BREVO_HOST,
+      port: process.env.SMTP_BREVO_PORT,
+      secure: false,
+      auth: {
+        user: process.env.SMTP_BREVO_USER,
+        pass: process.env.SMTP_BREVO_PASS,
+      },
+    });
+
+
+    await transporter.sendMail({
+      from: "haideralymughal@gmail.com",
+      to: option.sendEmail,
+      subject: "Password reset Notification ",
+      text: option.text,
+      // html: "<b>follow the text</b>",
+    });
+
+    console.log("success email send");
+  } catch (err) {
+    console.log("err-->", err.message);
+
   }
-  await transport.sendMail(emailMessage);
 
 }
 
-
 export {
-  sendEmail
+  emailSender
 }

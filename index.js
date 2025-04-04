@@ -1,45 +1,43 @@
 import express from "express"
-import mongoose from "mongoose"
+import fromRouter from "./routes/form-route.js"
+import moviesRouter from './routes/movies-router.js'
+import userRouter from './routes/user-route.js'
+import seriesRouter from './routes/series-route.js'
+import imageRouter from './routes/image-route.js'
+import imageCRouter from "./routes/imageC-route.js"
 import dotenv from "dotenv"
+import mongoose from "mongoose"
+import path from 'path';
 import { fileURLToPath } from 'url';
-import path from "path"
-import movieRouter from "./router/moviesroute.js"
-import authUser from './router/authRouter.js'
-import userRouter from './router/userRouter.js'
-import cors from "cors";
+import cors from "cors"
+
+const app = express()
+
+dotenv.config()
+const db_connect = process.env.DB_CONN
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 
+app.use(cors())
 
-dotenv.config()
 const port = process.env.PORT
-const dbConnect = process.env.DB_CON
 
-const app = express()
+app.use(express.static("public"));
 
-app.use(cors({
-  origin: "http://localhost:3000",
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-}));
-// app.use(cors());
+app.use(express.static(path.join(__dirname, "./app/app/build/index.html")))
 
-
-app.use(express())
-
-if (!dbConnect) {
-  console.log("db is not working");
-  process.exit(1)
+if (!db_connect) {
+  console.log("err in db_connect");
 }
+mongoose.connect(db_connect)
 
-mongoose.connect(dbConnect)
-
-app.use(express.static(path.join((__dirname, "./app/client/build"))))
-
-app.use("/api/movies", movieRouter)
-app.use('/api/auth', authUser)
-app.use('/api/user', userRouter)
+app.use("/api/v1/form", fromRouter)
+app.use("/api/v1/movies", moviesRouter)
+app.use("/api/v1/auth", userRouter)
+app.use("/api/v1/series", seriesRouter)
+app.use("/api/v1/uploadImage", imageRouter)
+app.use("/api/v1/Image", imageCRouter)
 
 app.listen(port)
